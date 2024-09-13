@@ -3,7 +3,9 @@ using Robust.Shared.Console;
 using Robust.Shared.Toolshed.Commands.Generic;
 using Robust.Shared.IoC;
 using Robust.Shared.GameObjects;
-namespace AddcompcCommand.Commands;
+
+
+namespace BasedCommands.AddcompcCommand;
 
 [AnyCommand] 
 public class AddcompcCommand : IConsoleCommand

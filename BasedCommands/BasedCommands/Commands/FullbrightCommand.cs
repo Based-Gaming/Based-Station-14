@@ -3,7 +3,9 @@ using Robust.Client.Graphics;
 using Robust.Shared.Console;
 using Robust.Shared.Toolshed.Commands.Generic;
 using Robust.Shared.IoC;
-namespace FullbrightCommand.Commands;
+
+
+namespace BasedCommands.FullbrightCommand;
 
 [AnyCommand] 
 public class FullbrightCommand : IConsoleCommand
