@@ -5,3 +5,6 @@
 /.vs
 /Fullbright/.idea
 /BasedCommands/.idea
+/CommandPermissionPatch/.vs
+/CommandPermissionPatch/obj
+/CommandPermissionPatch/bin/Debug/net8.0
