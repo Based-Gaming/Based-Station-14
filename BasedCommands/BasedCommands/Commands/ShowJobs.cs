@@ -4,6 +4,7 @@ using Robust.Shared.Toolshed.Commands.Generic;
 using Robust.Shared.IoC;
 using Robust.Shared.GameObjects;
 using Robust.Client.Player;
+using Content.Shared.Overlays;
 
 
 namespace BasedCommands.ShowJobsCommand;
@@ -12,7 +13,7 @@ namespace BasedCommands.ShowJobsCommand;
 public class ShowJobsCommand : IConsoleCommand
 {
     public string Command => "based.showjobs";
-    public string Description => "Adds 'jobs' overlay";
+    public string Description => "Toggles 'jobs' overlay";
     public string Help => "HELP!";
     [Dependency] private readonly IEntityManager _entityManager = default!;
     [Dependency] private readonly IPlayerManager _player = default!;
@@ -27,7 +28,13 @@ public class ShowJobsCommand : IConsoleCommand
             return;
         }
 
-        var pnent = _entityManager.GetNetEntity(player.Value);
-        shell.ExecuteCommand($"based.addcompc {pnent.Id} ShowJobIcons");
+        NetEntity pnent = _entityManager.GetNetEntity(player.Value);
+        if (_entityManager.HasComponent<ShowJobIconsComponent>(player.Value))
+        {
+            shell.ExecuteCommand($"rmcompc {pnent.Id} ShowJobIcons");
+        }
+        else {
+            shell.ExecuteCommand($"based.addcompc {pnent.Id} ShowJobIcons");
+        }
     }
 }
