@@ -12,3 +12,6 @@
 /EnableVVPatch/.vs
 /EnableVVPatch/bin/Release/net8.0
 /EnableVVPatch/obj
+/DisableOverlays/.vs
+/DisableOverlays/bin/Release/net8.0
+/DisableOverlays/obj
