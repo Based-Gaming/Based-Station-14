@@ -5,6 +5,7 @@ using Robust.Shared.IoC;
 using Robust.Shared.GameObjects;
 using Robust.Client.Player;
 using Content.Shared.Overlays;
+using Content.Shared.Antag;
 
 
 namespace BasedCommands.ShowJobsCommand;
@@ -35,6 +36,26 @@ public class ShowJobsCommand : IConsoleCommand
         }
         else {
             shell.ExecuteCommand($"based.addcompc {pnent.Id} ShowJobIcons");
+        }
+
+        // Lump antag icons into this (ie zombie)
+        if (_entityManager.HasComponent<ShowAntagIconsComponent>(player.Value))
+        {
+            shell.ExecuteCommand($"rmcompc {pnent.Id} ShowAntagIcons");
+        }
+        else
+        {
+            shell.ExecuteCommand($"based.addcompc {pnent.Id} ShowAntagIcons");
+        }
+
+        // Lump syndicate (ie nukie) icons into this
+        if (_entityManager.HasComponent<ShowSyndicateIconsComponent>(player.Value))
+        {
+            shell.ExecuteCommand($"rmcompc {pnent.Id} ShowSyndicateIcons");
+        }
+        else
+        {
+            shell.ExecuteCommand($"based.addcompc {pnent.Id} ShowSyndicateIcons");
         }
     }
 }
