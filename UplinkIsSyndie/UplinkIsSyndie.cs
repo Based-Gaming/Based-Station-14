@@ -30,7 +30,6 @@ public static class MarseyPatch
     public static string Name = "UplinkIsSyndie";
     public static string Description =
         "Adds an uplink check to the ShowJobIcons component";
-    public static Assembly ContentClient = null;
     public static bool ignoreFields = true;
 
     public static void Entry()
