@@ -1,23 +1,7 @@
 ﻿################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
+**/.vs
+**/bin
+**/obj
 
-/.vs
-/Fullbright/.idea
-/BasedCommands/.idea
-/CommandPermissionPatch/.vs
-/CommandPermissionPatch/obj
-/CommandPermissionPatch/bin/Debug/net8.0
-/CommandPermissionPatch/bin/Release/net8.0
-/EnableVVPatch/.vs
-/EnableVVPatch/bin/Release/net8.0
-/EnableVVPatch/obj
-/DisableOverlays/.vs
-/DisableOverlays/bin/Release/net8.0
-/DisableOverlays/obj
-/VielPatch/.vs
-/VielPatch/bin/Release/net8.0
-/VielPatch/obj
-/UplinkIsSyndie/.vs
-/UplinkIsSyndie/bin
-/UplinkIsSyndie/obj

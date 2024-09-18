@@ -1,47 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
 using HarmonyLib;
-using static Sedition;
-
-
-public static class MarseyPatch
-{
-    public static string Name = "VielPatch";
-
-    public static string Description =
-        "Reimplements the reverted 'viel' feature";
-
-    public static Assembly ContentClient = null;
-    public static bool ignoreFields = true;
-}
-public static class Sedition
-{
-    private static bool tripped = false;
-
-    public delegate void ForwardHide(Assembly asm);
-    public static ForwardHide? hideDelegate;
-
-    public delegate void ForwardImp(string name);
-    public static ForwardImp? Imposition;
-    private static string[] toHide = {
-        "BasedCommands",
-        "Based",
-        "DisableOverlays",
-        "EnableVVPatch"
-    };
-
-    public static void Hide()
-    {
-        if (tripped) return;
-
-        tripped = true;
-        hideDelegate?.Invoke(Assembly.GetExecutingAssembly());
-        foreach (string s in toHide)
-        {
-            Imposition?.Invoke(s);
-        }
-    }
-}
 
 [HarmonyPatch]
 public class VielStealthPatch
@@ -114,7 +73,7 @@ static class VielPatch1
 static class VielPatch2
 {
     private static List<string?> HiddenAssemblies = [
-        "BasedCommands", "DisableOverlays", "EnableVV", "VieldPatch"];
+        "BasedCommands", "BasedPatches"];
 
     [HarmonyTargetMethod]
     private static MethodBase TargetMethod()

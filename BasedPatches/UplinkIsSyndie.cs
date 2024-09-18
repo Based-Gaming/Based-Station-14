@@ -7,36 +7,7 @@ using Content.Shared.StoreDiscount.Components;
 using Content.Shared.StatusIcon;
 using Robust.Shared.Prototypes;
 using Content.Shared.Access.Systems;
-using Content.Client.Overlays;
-using Content.Shared.Inventory;
 using Robust.Shared.IoC;
-
-public static class Sedition
-{
-    private static bool tripped = false;
-    public delegate void ForwardHide(Assembly asm);
-    public static ForwardHide? hideDelegate;
-
-    public static void Hide()
-    {
-        if (tripped) return;
-
-        tripped = true;
-        hideDelegate?.Invoke(Assembly.GetExecutingAssembly());
-    }
-}
-public static class MarseyPatch
-{
-    public static string Name = "UplinkIsSyndie";
-    public static string Description =
-        "Adds an uplink check to the ShowJobIcons component";
-    public static bool ignoreFields = true;
-
-    public static void Entry()
-    {
-        Sedition.Hide();
-    }
-}
 
 [HarmonyPatch]
 public class UplinkIsSyndiePatch
