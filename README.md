@@ -10,8 +10,9 @@ To use: Download the MarseyLoader latest release. Place the plugin.dll files int
 * BasedPatches
   * DisableOverlays
     * Attempts to disable various overlays (ie flashes). May not work at this time
-  * EnableVV
+  * LocalAdmin
     * Enables the Viewvariables commands and menu verbs
+	* Enables all local commands
   * EnhancedJobIcons <based.showjobs must be enabled>
     * People with a PDA that has an uplink will show up with a "syndicate" job icon
 	* People who are pacified (ie thiefs), show up with an "unknown" job icon (gray square)
