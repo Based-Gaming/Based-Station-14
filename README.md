@@ -20,4 +20,10 @@ To use: Download the MarseyLoader latest release. Place the plugin.dll files int
     * Attempts to hide the plugins from the game client and IoC system
   
 ## TODO
-Add overlay if entity has Pacifist comp. (probably a thief)
+* auto attack
+* aimbot
+* UI: Based Menu
+  * toggle Based options
+  * Custom Game info such as:
+  * info about game mode (does nukie grid exist?, etc)
+  * Players info
