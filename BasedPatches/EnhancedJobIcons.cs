@@ -8,9 +8,10 @@ using Content.Shared.StatusIcon;
 using Robust.Shared.Prototypes;
 using Content.Shared.Access.Systems;
 using Robust.Shared.IoC;
+using Content.Shared.CombatMode.Pacification;
 
 [HarmonyPatch]
-public class UplinkIsSyndiePatch
+public class EnhancedJobIconsPatch
 {
     [HarmonyTargetMethod]
     private static MethodBase TargetMethod()
@@ -29,17 +30,19 @@ public class UplinkIsSyndiePatch
         }
         if (!isActive.Value) return;
 
+        //
+        // Check for an uplink-enabled PDA on the person
+        //
         IPrototypeManager _prototype = Traverse.Create(__instance).Field("_prototype").GetValue<IPrototypeManager>();
         AccessReaderSystem _accessReader = Traverse.Create(__instance).Field("_accessReader").GetValue<AccessReaderSystem>();
-
+        IEntityManager _entityManager = IoCManager.Resolve<IEntityManager>();
 
         if (_accessReader.FindAccessItemsInventory(uid, out var items))
         {
 
             foreach (EntityUid item in items)
             {
-                IEntityManager _entityManager = IoCManager.Resolve<IEntityManager>();
-                if (_entityManager.TryGetComponent<StoreDiscountComponent>(item, out var comp))
+                if (_entityManager.TryGetComponent<StoreDiscountComponent>(item, out var disComp))
                 {
 
                     // If their PDA has StoreDiscount then they have an uplink
@@ -49,6 +52,16 @@ public class UplinkIsSyndiePatch
                     }
                     break;
                 }
+            }
+        }
+        //
+        // Check for a pacifist (thief)
+        //
+        if (_entityManager.TryGetComponent<PacifiedComponent>(uid, out var pacComp))
+        {
+            if (_prototype.TryIndex<FactionIconPrototype>("Unknown", out var iconPrototype))
+            {
+                ev.StatusIcons.Add(iconPrototype);
             }
         }
     }

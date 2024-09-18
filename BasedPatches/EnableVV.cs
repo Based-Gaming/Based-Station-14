@@ -1,32 +1,15 @@
 ﻿using System.Reflection;
 using HarmonyLib;
 
-[HarmonyPatch]
-/// <summary>
-/// Sets the ability to run a command to always true via PostFix: https://github.com/space-wizards/RobustToolbox/blob/master/Robust.Client/Console/ClientConsoleHost.cs#L198
-/// </summary>
-static class EnableVV
-{
-    [HarmonyTargetMethod]
-    private static MethodBase TargetMethod()
-    {
-        return AccessTools.Method(AccessTools.TypeByName("Robust.Client.Console.ClientConsoleHost"), "CanExecute");
-    }
-
-    [HarmonyPostfix]
-    private static void Postfix(ref bool __result)
-    {
-        __result = true;
-    }
-}
-
+// Added benefit of enabling MOST client commands
 [HarmonyPatch]
 static class EnableVVPatch
 {
-    [HarmonyTargetMethod]
-    private static MethodBase TargetMethod()
+    [HarmonyTargetMethods]
+    private static IEnumerable<MethodBase> TargetMethods()
     {
-        return AccessTools.Method(AccessTools.TypeByName("Content.Client.Administration.Managers.ClientAdminManager"), "CanViewVar");
+        yield return AccessTools.Method(AccessTools.TypeByName("Robust.Client.Console.ClientConsoleHost"), "CanExecute");
+        yield return AccessTools.Method(AccessTools.TypeByName("Content.Client.Administration.Managers.ClientAdminManager"), "CanCommand");
     }
 
     [HarmonyPostfix]

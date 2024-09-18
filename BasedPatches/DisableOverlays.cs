@@ -12,6 +12,7 @@ public static class OverlaysPatch
         return AccessTools.Method(AccessTools.TypeByName(type), "Draw");
     }
 
+    [HarmonyTargetMethods]
     private static IEnumerable<MethodBase> TargetMethods()
     {
         yield return GetOverlayDraw("Content.Client.Drunk.DrunkOverlay");

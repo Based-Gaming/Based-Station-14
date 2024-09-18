@@ -9,12 +9,13 @@ To use: Download the MarseyLoader latest release. Place the plugin.dll files int
   * `based.toggle` for quickstart
 * BasedPatches
   * DisableOverlays
-    * Attempts to disable various overlays (ie flashes) May not work at this time
-  * EnableVVPatch
+    * Attempts to disable various overlays (ie flashes). May not work at this time
+  * EnableVV
     * Enables the Viewvariables commands and menu verbs
-  * UplinkIsSyndie
-    * People with a PDA that has an uplink will show up with a "syndicate" job icon when showjobicons is enabled
-  * VielPatch
+  * EnhancedJobIcons <based.showjobs must be enabled>
+    * People with a PDA that has an uplink will show up with a "syndicate" job icon
+	* People who are pacified (ie thiefs), show up with an "unknown" job icon (gray square)
+  * Viel
     * Attempts to hide the plugins from the game client and IoC system
   
 ## TODO
