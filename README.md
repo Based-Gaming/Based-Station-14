@@ -1,5 +1,6 @@
 # Based Station 14
-Custom https://github.com/ValidHunters/Marseyloader plugins for Space Station 14 (SS14)
+### enhanced gaming experience
+Custom https://github.com/ValidHunters/Marseyloader plugin for Space Station 14 (SS14)
 
 To use: Download the MarseyLoader latest release. Place the plugin.dll files into the MarseLoader "mods" folder. Enable the mods in the MarseyLoader Launcher
 
