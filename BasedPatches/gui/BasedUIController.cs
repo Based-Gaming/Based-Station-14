@@ -22,9 +22,8 @@ namespace Content.Client.UserInterface.Systems.Based;
 
 public sealed class BasedUIController : UIController, IOnStateChanged<GameplayState>, IOnSystemChanged<BasedSystem>
 {
-    [UISystemDependency] public BasedSystem _based = new();
+    [UISystemDependency] public BasedSystem _based = default!;
     //public BasedSystem _based = new();
-    [UISystemDependency] private readonly SubFloorHideSystem _subfloorHide = default!;
 
     private BasedWindow? _window;
     public bool initialized = false;
