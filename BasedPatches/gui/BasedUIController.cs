@@ -17,27 +17,29 @@ using Robust.Shared.ContentPack;
 using Robust.Shared.Utility;
 using Texture = Robust.Client.Graphics.Texture;
 using System.Numerics;
+using Content.Client.UserInterface.Systems.Gameplay;
 
 namespace Content.Client.UserInterface.Systems.Based;
 
 public sealed class BasedUIController : UIController, IOnStateChanged<GameplayState>, IOnSystemChanged<BasedSystem>
 {
-    [UISystemDependency] public BasedSystem _based = default!;
-    //public BasedSystem _based = new();
+    //[UISystemDependency] public BasedSystem _based = default!;
+    [UISystemDependency] public BasedSystem? _based;
 
     private BasedWindow? _window;
     public bool initialized = false;
 
-    private MenuButton BasedButton = new ();
+    private MenuButton? BasedButton; // = new ();
 
     public override void Initialize()
     {
         base.Initialize();
-        IoCManager.InjectDependencies(this);
-        IoCManager.InjectDependencies(_based);
-        IoCManager.BuildGraph();
+        _based = new BasedSystem();
+        _based.Initialize();
+
+        BasedButton = new MenuButton();
         BasedButton.ToolTip = "Open the BA$ED menu";
-        BasedButton.Access = AccessLevel.Internal;
+        BasedButton.Access = AccessLevel.Public;
         BasedButton.Name = "BasedButton";
         BasedButton.MinSize = new Vector2(42, 64);
         BasedButton.HorizontalExpand = true;
@@ -48,6 +50,9 @@ public sealed class BasedUIController : UIController, IOnStateChanged<GameplaySt
         //using var imageStream = res.ContentFileRead(new ResPath("/Textures/Interface/sandbox.svg.192dpi.png"));
         BasedButton.Icon = Texture.LoadFromPNGStream(imageStream, "Based");
         initialized = true;
+        IoCManager.InjectDependencies(this);
+        IoCManager.InjectDependencies(_based);
+        IoCManager.BuildGraph();
     }
 
     public void OnStateEntered(GameplayState state)
