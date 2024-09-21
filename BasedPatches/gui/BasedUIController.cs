@@ -21,6 +21,7 @@ using Content.Client.UserInterface.Systems.Gameplay;
 
 namespace Content.Client.UserInterface.Systems.Based;
 
+// TODO: Try using subverter to sideload the menu
 public sealed class BasedUIController : UIController, IOnStateChanged<GameplayState>, IOnSystemChanged<BasedSystem>
 {
     //[UISystemDependency] public BasedSystem _based = default!;
