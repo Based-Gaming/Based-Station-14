@@ -11,7 +11,7 @@ using Robust.Shared.IoC;
 using Content.Shared.CombatMode.Pacification;
 
 [HarmonyPatch]
-public class EnhancedJobIconsPatch
+public static class EnhancedJobIconsPatch
 {
     [HarmonyTargetMethod]
     private static MethodBase TargetMethod()

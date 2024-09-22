@@ -35,5 +35,10 @@ namespace Content.Client.Based
         {
             _consoleHost.ExecuteCommand("based.subfloor");
         }
+
+        public void ToggleAimbot()
+        {
+            _consoleHost.ExecuteCommand("based.aimbot");
+        }
     }
 }

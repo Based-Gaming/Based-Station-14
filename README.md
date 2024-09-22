@@ -22,8 +22,6 @@ To use: Download the MarseyLoader latest release. Place the plugin.dll files int
     * Attempts to hide the modules from the game client and IoC system
   
 ## TODO
-* auto attack
-* aimbot
 * UI: Based Menu
   * Custom Game info such as:
   * info about game mode (does nukie grid exist?, etc)

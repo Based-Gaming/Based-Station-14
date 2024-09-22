@@ -12,6 +12,7 @@ public sealed partial class BasedWindow : DefaultWindow
     public Button ShowJobIconsButton = new ();
     public Button ToggleLightButton = new();
     public Button ToggleSubfloorButton = new();
+    public Button ToggleAutoAttackButton = new();
 
     public BasedWindow()
     {
@@ -38,13 +39,18 @@ public sealed partial class BasedWindow : DefaultWindow
         ToggleSubfloorButton.Access = AccessLevel.Public;
         ToggleSubfloorButton.ToggleMode = true;
 
+        ToggleAutoAttackButton.Text = "Toggle Aimbot";
+        ToggleAutoAttackButton.Name = "ToggleAimbotButton";
+        ToggleAutoAttackButton.Access = AccessLevel.Public;
+        ToggleAutoAttackButton.ToggleMode = true;
+
         // Build Gui layout
-        //this.Children.Add(box);
         this.ContentsContainer.AddChild(box);
 
         box.AddChild(ShowJobIconsButton);
         box.AddChild(ToggleLightButton);
         box.AddChild(ToggleSubfloorButton);
+        box.AddChild(ToggleAutoAttackButton);
     }
    
     protected override void Dispose(bool disposing)
