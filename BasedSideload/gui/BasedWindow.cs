@@ -1,22 +1,28 @@
 ﻿using Robust.Client.UserInterface.CustomControls;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface;
+using Content.Client.Eui;
 
 namespace Content.Client.UserInterface.Systems.Based.Windows;
 
 public sealed partial class BasedWindow : DefaultWindow
 {
     public event Action? OnDisposed;
+    private BoxContainer box = new ();
     public Button ShowJobIconsButton = new ();
     public Button ToggleLightButton = new();
     public Button ToggleSubfloorButton = new();
 
     public BasedWindow()
     {
-        //RobustXamlLoader.Load(this);
-        Title = "BA$ED Menu";
-        Resizable = false;
+        this.Title = "BA$ED Menu";
+        this.Resizable = false;
 
+        // Setup box container
+        box.Orientation = BoxContainer.LayoutOrientation.Vertical;
+        box.SeparationOverride = 4;
+
+        // Setup buttons
         ShowJobIconsButton.Text = "Show Jobs";
         ShowJobIconsButton.Name = "ShowJobIconsButton";
         ShowJobIconsButton.Access = AccessLevel.Public;
@@ -31,7 +37,16 @@ public sealed partial class BasedWindow : DefaultWindow
         ToggleSubfloorButton.Name = "ToggleSubfloorButton";
         ToggleSubfloorButton.Access = AccessLevel.Public;
         ToggleSubfloorButton.ToggleMode = true;
+
+        // Build Gui layout
+        //this.Children.Add(box);
+        this.ContentsContainer.AddChild(box);
+
+        box.AddChild(ShowJobIconsButton);
+        box.AddChild(ToggleLightButton);
+        box.AddChild(ToggleSubfloorButton);
     }
+   
     protected override void Dispose(bool disposing)
     {
         OnDisposed?.Invoke();

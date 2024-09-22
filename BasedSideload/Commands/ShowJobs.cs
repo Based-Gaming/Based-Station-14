@@ -11,7 +11,7 @@ using Content.Shared.Antag;
 namespace BasedCommands.ShowJobsCommand;
 
 [AnyCommand] 
-public class ShowJobsCommand : IConsoleCommand
+public sealed class ShowJobsCommand : IConsoleCommand
 {
     public string Command => "based.showjobs";
     public string Description => "Toggles 'jobs' overlay";

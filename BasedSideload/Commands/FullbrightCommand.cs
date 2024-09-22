@@ -8,7 +8,7 @@ using Robust.Shared.IoC;
 namespace BasedCommands.FullbrightCommand;
 
 [AnyCommand] 
-public class FullbrightCommand : IConsoleCommand
+public sealed class FullbrightCommand : IConsoleCommand
 {
     public string Command => "based.fullbright";
     public string Description => "Toggles fullbright mode";

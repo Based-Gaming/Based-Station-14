@@ -8,7 +8,7 @@ using Robust.Shared.GameObjects;
 namespace BasedCommands.AddcompcCommand;
 
 [AnyCommand] 
-public class AddcompcCommand : IConsoleCommand
+public sealed class AddcompcCommand : IConsoleCommand
 {
     public string Command => "based.addcompc";
     public string Description => "Adds client component with no netsync";

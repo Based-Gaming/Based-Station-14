@@ -9,7 +9,7 @@ using Content.Client.SubFloor;
 namespace BasedCommands.SubfloorCommand;
 
 [AnyCommand] 
-public class SubfloorCommand : IConsoleCommand
+public sealed class SubfloorCommand : IConsoleCommand
 {
     public string Command => "based.subfloor";
     public string Description => "Toggles subfloor mode";

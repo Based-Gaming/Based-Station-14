@@ -10,7 +10,7 @@ using Content.Shared.Overlays;
 namespace BasedCommands.ShowJobsCommand;
 
 [AnyCommand]
-public class ToggleCommand : IConsoleCommand
+public sealed class ToggleCommand : IConsoleCommand
 {
     public string Command => "based.toggle";
     public string Description => "Toggles based mode. (all based enhancements)";

@@ -1,15 +1,15 @@
-﻿using Robust.Client.Console;
-using Content.Client.Administration.Managers;
+﻿using Content.Shared.Sandbox;
+using Robust.Client.Console;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 
 namespace Content.Client.Based
 {
+
     public sealed class BasedSystem : EntitySystem
     {
         [Dependency] private readonly IClientConsoleHost _consoleHost = default!;
 
-        public event Action? BasedEnabled;
         public event Action? BasedDisabled;
 
         public override void Initialize()
