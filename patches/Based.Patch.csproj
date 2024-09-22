@@ -5,6 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>CanExecutePatch</RootNamespace>
+        <BaseOutputPath>..\bin\</BaseOutputPath>
     </PropertyGroup>
 
     <ItemGroup>
