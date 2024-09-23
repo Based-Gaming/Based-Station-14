@@ -1,14 +1,19 @@
-﻿using Content.Shared.Sandbox;
-using Robust.Client.Console;
+﻿using Robust.Client.Console;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 
 namespace Content.Client.Based
 {
+    public enum AimMode
+    {
+        NEAR_PLAYER,
+        NEAR_MOUSE
+    }
 
     public sealed class BasedSystem : EntitySystem
     {
         [Dependency] private readonly IClientConsoleHost _consoleHost = default!;
+        public AimMode curAimbotMode = AimMode.NEAR_PLAYER;
 
         public event Action? BasedDisabled;
 
@@ -36,9 +41,14 @@ namespace Content.Client.Based
             _consoleHost.ExecuteCommand("based.subfloor");
         }
 
-        public void ToggleAimbot()
+        public void ToggleAimbot(bool modeOnly=false)
         {
-            _consoleHost.ExecuteCommand("based.aimbot");
+            string cmd = "based.aimbot " + curAimbotMode.ToString();
+            if (modeOnly)
+            {
+                cmd += " update_mode_only";
+            }
+            _consoleHost.ExecuteCommand(cmd);
         }
     }
 }

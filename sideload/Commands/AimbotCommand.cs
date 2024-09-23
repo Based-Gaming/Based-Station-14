@@ -1,6 +1,6 @@
+using Content.Client.Based;
 using Content.Shared.Administration;
 using Robust.Shared.Console;
-using Robust.Shared.IoC;
 using Robust.Shared.Toolshed.Commands.Generic;
 
 namespace BasedCommands.ShowJobsCommand;
@@ -12,17 +12,28 @@ public sealed class AimbotCommand : IConsoleCommand
     public string Description => "Toggles aimbot mode";
     public string Help => "HELP!";
     public bool enabled = false;
-    //private bool injected = false;
+    public AimMode mode = AimMode.NEAR_PLAYER;
 
+    // based.aimbot [MODE] [UPDATE_MODE_ONLY]
     public void Execute(IConsoleShell shell, string argStr, string[] args)
-    {
-        /*
-        if (!this.injected)
+    {   
+        if (args.Length > 1)
         {
-            IoCManager.InjectDependencies(this);
-            this.injected = true;
-        }*/
-        
+            string _modeStr = args[0];
+            if (_modeStr.Equals("NEAR_PLAYER"))
+            {
+                this.mode = AimMode.NEAR_PLAYER;
+            } else if (_modeStr.Equals("NEAR_MOUSE"))
+            {
+                this.mode = AimMode.NEAR_MOUSE;
+            }
+            if (args.Length == 2)
+            {
+                // update mode ONLY
+                return;
+            }
+        }
+
         if (this.enabled)
         {
             shell.WriteLine("Aimbot [Disabled]");
