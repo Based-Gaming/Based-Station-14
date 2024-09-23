@@ -21,6 +21,16 @@ using Robust.Shared.Map;
 using Robust.Client.Graphics;
 using Robust.Shared.Physics;
 using System.Numerics;
+using Content.Client.Gameplay;
+using Robust.Client.State;
+using Content.Client.Weapons.Melee;
+using System.ComponentModel;
+using Robust.Shared.Maths;
+using System.Runtime.CompilerServices;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+using static Content.Shared.Interaction.SharedInteractionSystem;
+using Content.Shared.Physics;
+using Robust.Shared.Physics.Systems;
 
 enum AimMode
 {
@@ -28,9 +38,37 @@ enum AimMode
     NEAR_MOUSE
 }
 
+
 [HarmonyPatch]
 public static class AimbotPatch
 {
+    private static HashSet<EntityUid> ArcRayCast(SharedPhysicsSystem _physics, Vector2 position, Angle angle, Angle arcWidth, float range, MapId mapId, EntityUid ignore)
+    {
+        // TODO: This is pretty sucky.
+        var widthRad = arcWidth;
+        var increments = 1 + 35 * (int)Math.Ceiling(widthRad / (2 * Math.PI));
+        var increment = widthRad / increments;
+        var baseAngle = angle - widthRad / 2;
+        int AttackMask = (int)(CollisionGroup.MobMask | CollisionGroup.Opaque);
+
+        var resSet = new HashSet<EntityUid>();
+
+        for (var i = 0; i < increments; i++)
+        {
+            var castAngle = new Angle(baseAngle + increment * i);
+            var res = _physics.IntersectRay(mapId,
+                new CollisionRay(position, castAngle.ToWorldVec(),
+                    AttackMask), range, ignore, false).ToList();
+
+            if (res.Count != 0)
+            {
+                resSet.Add(res[0].HitEntity);
+            }
+        }
+
+        return resSet;
+    }
+
     [HarmonyTargetMethod]
     private static MethodBase TargetMethod()
     {
@@ -89,7 +127,8 @@ public static class AimbotPatch
         }
 
         /* Get Active Weapon */
-        SharedMeleeWeaponSystem _melee = _entityManager.System<SharedMeleeWeaponSystem>();
+        MeleeWeaponSystem _melee = _entityManager.System<MeleeWeaponSystem>();
+        //SharedMeleeWeaponSystem _melee = _entityManager.System<SharedMeleeWeaponSystem>();
         GunSystem _gun = _entityManager.System<GunSystem>();
         EntityLookupSystem _entityLookup = _entityManager.System<EntityLookupSystem>();
 
@@ -213,6 +252,7 @@ public static class AimbotPatch
 
         InputSystem _inputSystem = _entityManager.System<InputSystem>();
         var useDown = _inputSystem.CmdStates.GetState(EngineKeyFunctions.Use);
+        var altDown = _inputSystem.CmdStates.GetState(EngineKeyFunctions.UseSecondary);
         if (useDown == BoundKeyState.Down)
         {
             if (meleeWeapon != null)
@@ -223,18 +263,56 @@ public static class AimbotPatch
                     _entityManager.GetNetEntity(weaponUid),
                     _entityManager.GetNetCoordinates(targetxform.Coordinates))
                  );
-            } else if (gun != null)
+                return;
+            }
+            else if (gun != null)
             {
                 // Shoot
                 // Define target coordinates relative to gunner entity, so that network latency on moving grids doesn't fuck up the target location.
                 var coordinates = _ts.ToCoordinates(player, targetxform.MapPosition);
-                _entityManager.RaisePredictiveEvent(new RequestShootEvent {
-                        Target = _entityManager.GetNetEntity(target),
-                        Coordinates = _entityManager.GetNetCoordinates(targetxform.Coordinates),
-                        Gun = _entityManager.GetNetEntity(weaponUid)}
+                _entityManager.RaisePredictiveEvent(new RequestShootEvent
+                {
+                    Target = _entityManager.GetNetEntity(target),
+                    Coordinates = _entityManager.GetNetCoordinates(targetxform.Coordinates),
+                    Gun = _entityManager.GetNetEntity(weaponUid)
+                }
                  );
+                return;
                 //_gun.AttemptShoot(player, weaponUid, gun, targetxform.Coordinates);
             }
+        }
+        else if (meleeWeapon != null && altDown == BoundKeyState.Down)
+        {
+            // If it's an unarmed attack then do a disarm
+            if (meleeWeapon.AltDisarm && weaponUid == player)
+            {
+                _entityManager.RaisePredictiveEvent(new DisarmAttackEvent(
+                    _entityManager.GetNetEntity(target),
+                    _entityManager.GetNetCoordinates(targetxform.Coordinates)));
+            }
+            else
+            {
+
+                MapCoordinates targetMap = _ts.ToMapCoordinates(targetxform.Coordinates);
+
+                if (targetMap.MapId != userXform.MapID)
+                    return;
+                SharedPhysicsSystem _physics = _entityManager.System<SharedPhysicsSystem>();
+                var userPos = _ts.GetWorldPosition(userXform);
+                var direction = targetMap.Position - userPos;
+                var distance = MathF.Min(meleeWeapon.Range, direction.Length());
+
+                // This should really be improved. GetEntitiesInArc uses pos instead of bounding boxes.
+                // Server will validate it with InRangeUnobstructed.
+                var entities = _entityManager.GetNetEntityList(ArcRayCast(_physics, 
+                    userPos, direction.ToWorldAngle(), meleeWeapon.Angle, distance, userXform.MapID, player).ToList());
+                _entityManager.RaisePredictiveEvent(new HeavyAttackEvent(
+                    _entityManager.GetNetEntity(weaponUid),
+                    entities.GetRange(0, Math.Min(5, entities.Count)),
+                    _entityManager.GetNetCoordinates(targetxform.Coordinates)
+                    ));
+            }
+            return;
         }
     }
 }
