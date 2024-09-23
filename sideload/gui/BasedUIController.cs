@@ -1,15 +1,9 @@
-﻿using System.Reflection;
-using HarmonyLib;
-using Robust.Shared.IoC;
+﻿using Robust.Shared.IoC;
 using Content.Client.Gameplay;
-using Content.Client.SubFloor;
 using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Systems.Based.Windows;
-using Robust.Client.Graphics;
-using Robust.Client.Player;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controllers;
-using Robust.Shared.Console;
 using static Robust.Client.UserInterface.Controls.BaseButton;
 using Robust.Shared.Input.Binding;
 using Content.Client.Based;
@@ -19,7 +13,6 @@ using Texture = Robust.Client.Graphics.Texture;
 using System.Numerics;
 using Content.Client.UserInterface.Systems.Gameplay;
 using JetBrains.Annotations;
-using Content.Client.Eui;
 using Content.Client.Stylesheets;
 namespace Content.Client.UserInterface.Systems.Based;
 
@@ -68,6 +61,7 @@ public sealed class BasedUIController : UIController, IOnStateChanged<GameplaySt
         }
         CommandBinds.Unregister<BasedSystem>();
     }
+
     private void UnloadGui()
     {
 
@@ -86,6 +80,7 @@ public sealed class BasedUIController : UIController, IOnStateChanged<GameplaySt
     {
         UnloadGui();
         _window = UIManager.CreateWindow<BasedWindow>();
+        _window._based = _based; // pass system to our window
 
         _window.OnOpen += OnWindowOpened;
         _window.OnClose += OnWindowClosed;
@@ -93,8 +88,9 @@ public sealed class BasedUIController : UIController, IOnStateChanged<GameplaySt
         _window.ShowJobIconsButton.OnPressed += _ => _based.ShowJobs();
         _window.ToggleLightButton.OnToggled += _ => _based.ToggleLight();
         _window.ToggleSubfloorButton.OnPressed += _ => _based.ToggleSubFloor();
-        _window.ToggleAutoAttackButton.OnPressed += _ => _based.ToggleAimbot();
+        _window.ToggleAimbotButton.OnPressed += _ => _based.ToggleAimbot();
     }
+
     public void UnloadButton()
     {
         if (BasedButton == null)

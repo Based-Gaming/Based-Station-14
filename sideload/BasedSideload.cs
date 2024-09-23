@@ -38,7 +38,7 @@ public static class Sedition
 }
 public static class SubverterPatch
 {
-    public static string Name = "Based Sideload";
+    public static string Name = "Based.Sideload";
     public static string Description = "Adds 'based.*' commands and more";
     public static Harmony Harm = new("org.Based.Sideload");
     public static void Entry()

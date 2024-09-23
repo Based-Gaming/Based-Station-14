@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using HarmonyLib;
 
 public static class MarseyLogger
 {
@@ -40,7 +39,7 @@ public static class Sedition
 }
 public static class MarseyPatch
 {
-    public static string Name = "BasedPatches";
+    public static string Name = "Based.Patch";
     public static string Description =
         "Adds all based patches";
     public static bool ignoreFields = true;
