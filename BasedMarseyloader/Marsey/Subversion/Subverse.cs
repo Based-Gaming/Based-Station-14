@@ -61,6 +61,10 @@ public static class Subverse
 
         foreach (string path in _subverters!)
         {
+            //byte[] assemblyData = File.ReadAllBytes(path);
+            //FileHandler.TryLinuxToDotnet(ref assemblyData);
+            //Assembly assembly = Assembly.Load(assemblyData);
+            //Assembly subverterAssembly = assembly;
             Assembly subverterAssembly = Assembly.LoadFrom(path);
             MarseyLogger.Log(MarseyLogger.LogType.DEBG, "Subversion", $"Sideloading {path}");
             AssemblyFieldHandler.InitLogger(subverterAssembly, subverterAssembly.FullName);
