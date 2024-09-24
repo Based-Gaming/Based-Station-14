@@ -13,7 +13,7 @@ public static class MarseyConf
     /// <summary>
     /// Defines how strict is Hidesey
     /// </summary>
-    public static HideLevel MarseyHide = HideLevel.Normal;
+    public static HideLevel MarseyHide = HideLevel.Explicit; // BASED
 
     /// <summary>
     /// Log patcher output to separate file
@@ -79,6 +79,7 @@ public static class MarseyConf
     /// </summary>
     public static readonly Dictionary<string, Action<string>> EnvVarMap = new Dictionary<string, Action<string>>
     {
+#if (DEBUG)
         { "MARSEY_LOGGING", value => Logging = value == "true" },
         { "MARSEY_LOADER_DEBUG", value => DebugAllowed = value == "true" },
         { "MARSEY_LOADER_TRACE", value => TraceAllowed = value == "true" },
@@ -97,7 +98,28 @@ public static class MarseyConf
         { "MARSEY_NO_ANY_BACKPORTS", value => DisableAnyBackports = value == "true" },
         { "MARSEY_FORKID", MarseyPortMan.SetForkID },
         { "MARSEY_ENGINE", MarseyPortMan.SetEngineVer },
-        { "MARSEY_HIDE_LEVEL", value => MarseyHide = (HideLevel)Enum.Parse(typeof(HideLevel), value) }
+        { "MARSEY_HIDE_LEVEL", value => MarseyHide = (HideLevel.Explicit) } // BASED
+#else
+        { "MARSEY_LOGGING", value => Logging = false },
+        { "MARSEY_LOADER_DEBUG", value => DebugAllowed = false },
+        { "MARSEY_LOADER_TRACE", value => TraceAllowed = false },
+        { "MARSEY_THROW_FAIL", value => ThrowOnFail = value == "true" },
+        { "MARSEY_SEPARATE_LOGGER", value => SeparateLogger = false },
+        { "MARSEY_DISABLE_STRICT", value => DisableResPackStrict = value == "true" },
+        { "MARSEY_FORCINGHWID", value => ForceHWID = value == "true" },
+        { "MARSEY_FORCEDHWID", value => HWID.SetHWID(value)},
+        { "MARSEY_DISABLE_PRESENCE", value => KillRPC = value == "true" },
+        { "MARSEY_FAKE_PRESENCE", value => FakeRPC = value == "true"},
+        { "MARSEY_PRESENCE_USERNAME", value => DiscordRPC.SetUsername(value)},
+        { "MARSEY_DUMP_ASSEMBLIES", value => Dumper = false },
+        { "MARSEY_JAMMER", value => JamDials = value == "true" },
+        { "MARSEY_DISABLE_REC", value => DisableREC = value == "true" },
+        { "MARSEY_BACKPORTS", value => Backports = value == "true" },
+        { "MARSEY_NO_ANY_BACKPORTS", value => DisableAnyBackports = value == "true" },
+        { "MARSEY_FORKID", MarseyPortMan.SetForkID },
+        { "MARSEY_ENGINE", MarseyPortMan.SetEngineVer },
+        { "MARSEY_HIDE_LEVEL", value => MarseyHide = (HideLevel.Explicit) } // BASED
+#endif
     };
 
     // Conf variables that do not go into the EnvVarMap go here

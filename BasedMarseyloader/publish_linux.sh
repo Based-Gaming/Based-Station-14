@@ -5,8 +5,8 @@ cd "$(dirname "$0")"
 ./download_net_runtime.py linux
 
 # Clear out previous build.
-rm -r **/bin bin/publish/Linux
-rm SS14.Launcher_Linux.zip
+rm -rf **/bin bin/publish/Linux
+rm -f BasedMarsey.Launcher_Windows.zip
 
 dotnet publish SS14.Launcher/SS14.Launcher.csproj /p:FullRelease=True -c Release --no-self-contained -r linux-x64 /nologo /p:RobustILLink=true
 dotnet publish SS14.Loader/SS14.Loader.csproj -c Release --no-self-contained -r linux-x64 /nologo
@@ -24,4 +24,4 @@ cp SS14.Loader/bin/Release/net8.0/linux-x64/publish/* bin/publish/Linux/bin/load
 cp -r Dependencies/dotnet/linux/* bin/publish/Linux/dotnet/
 
 cd bin/publish/Linux
-zip -r ../../../SS14.Launcher_Linux.zip *
+zip -r ../../../BasedMarsey.Launcher_Linux.zip *

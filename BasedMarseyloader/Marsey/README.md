@@ -1,4 +1,6 @@
-## Marsey
+## Based Marsey
+
+THIS IS A MODIFIED MARSEY LAUNCHER FOR BASED. GIVE CREDIT TO MARSEY WHERE DUE
 
 | Folder        | Description                                                      |
 |---------------|------------------------------------------------------------------|

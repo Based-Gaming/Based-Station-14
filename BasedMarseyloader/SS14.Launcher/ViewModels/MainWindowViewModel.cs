@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -156,7 +156,8 @@ public sealed class MainWindowViewModel : ViewModelBase, IErrorOverlayOwner
     public async void OnWindowInitialized()
     {
         BusyTask = "Checking MarseyApi";
-        await MarseyApi.Initialize(_cfg.GetCVar(CVars.MarseyApiEndpoint), _cfg.GetCVar(CVars.MarseyApi));
+        //await MarseyApi.Initialize(_cfg.GetCVar(CVars.MarseyApiEndpoint), _cfg.GetCVar(CVars.MarseyApi));
+        await MarseyApi.Initialize(_cfg.GetCVar(CVars.MarseyApiEndpoint), false); // BASED: No...
         BusyTask = "Checking for launcher update...";
         CheckLauncherUpdate();
         BusyTask = "Refreshing login status...";

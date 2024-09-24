@@ -147,7 +147,9 @@ public class LauncherCommands
         else if (cmd == DBGJumpCommand)
         {
             Log.Information("JUMPER ENABLED - Loader will wait for a debugger to attach!");
-            MarseyConf.JumpLoaderDebug = true;
+#if (DEBUG)
+            MarseyConf.JumpLoaderDebug = true; // BASED: no...
+#endif
         }
         else if (cmd.StartsWith("R"))
         {

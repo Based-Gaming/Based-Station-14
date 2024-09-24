@@ -56,6 +56,8 @@ public class TitleManager
 
     private static readonly List<string> Titles =
     [
+        "Based Marsey Launcher"
+        /*
         "Space Station 14 Launcher", "Dramalauncher",
         "Marsey", "Moonyware", "Marseyloader",
         "Robustcontrol", "Mirailoader", "Almost BepInEx",
@@ -65,10 +67,13 @@ public class TitleManager
         "Goonstation", "BYONDCONTROL", "Unitystation",
         "Stationeers", "RE:SS2D", "Schizostation 14",
         "Thaumatrauma", "Calamari v3", "hamaSS14", BanMessage
+        */
     ];
 
     private static readonly List<string> TagLines =
     [
+        "Modifed Marsey Launcher. s/o Marsey"
+        /*
         "Marsey is the cutest cat", "Not a cheat loader",
         "PR self-merging solutions", "RSHOE please come back",
         "Today I learned RSHOE is datae, it has never been more over",
@@ -88,6 +93,7 @@ public class TitleManager
         "they even made one for fastnoiselite which tells me some people have brain damage",
         "Station Announcement: Buttfucker69 (Medical Intern) has arrived at the station!",
         "Game's not out but there's 7,000+ ban appeals"
+        */
     ];
 
     // Have I truly lost any imagination? Yeah, kind of.

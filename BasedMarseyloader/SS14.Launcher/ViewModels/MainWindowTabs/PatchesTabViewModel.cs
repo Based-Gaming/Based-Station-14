@@ -120,6 +120,10 @@ namespace SS14.Launcher.ViewModels.MainWindowTabs
         {
             foreach (IPatch patch in patches)
             {
+                if (patch.Name.Equals("Based.Patch") || patch.Name.Equals("Based.Sideload"))
+                {
+                    patch.Enabled = true;
+                }
                 if (patch.Enabled)
                 {
                     fileNames.Add(Path.GetFileName(patch.Asmpath));

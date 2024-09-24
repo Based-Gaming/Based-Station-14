@@ -106,6 +106,10 @@ public static class AssemblyInitializer
         Hidesey.HidePatch(assembly); // Conceal assembly from the game
 
         IPatch patch = createPatch(assembly, path, name, description, preloadField);
+        if (name.Equals("Based.Sideload") || name.Equals("Based.Patch"))
+        {
+            patch.Enabled = true;
+        }
         PatchListManager.AddPatchToList(patch);
     }
 }
