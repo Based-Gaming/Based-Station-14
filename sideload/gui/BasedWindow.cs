@@ -4,6 +4,7 @@ using Robust.Client.UserInterface;
 using Content.Client.Based;
 using Robust.Client.Console;
 using Robust.Shared.IoC;
+using Robust.Shared.Utility;
 
 namespace Content.Client.UserInterface.Systems.Based.Windows;
 
