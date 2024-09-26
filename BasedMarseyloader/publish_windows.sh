@@ -8,6 +8,7 @@ cd "$(dirname "$0")"
 rm -rf **/bin bin/publish/Windows
 rm -f BasedMarsey.Launcher_Windows.zip
 
+#TYPE="Release"
 if [ "$1" = "Debug" ]; then
 	TYPE="Debug"
 else
