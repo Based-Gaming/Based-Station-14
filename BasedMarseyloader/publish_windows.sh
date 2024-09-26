@@ -33,7 +33,9 @@ cp -r Dependencies/dotnet/windows/* bin/publish/Windows/dotnet
 cp "SS14.Launcher.Strap/bin/$TYPE/net45/publish/Marseyloader.exe" bin/publish/Windows/BasedMarseyloader.exe
 cp "SS14.Launcher.Strap/console.bat" bin/publish/Windows
 cp SS14.Launcher/bin/$TYPE/net8.0/win-x64/publish/* bin/publish/Windows/bin
+rm bin/publish/Windows/bin/*.pdb
 cp SS14.Loader/bin/$TYPE/net8.0/win-x64/publish/* bin/publish/Windows/bin/loader
+rm bin/publish/Windows/bin/loader/*.pdb
 
 pushd bin/publish/Windows
 zip -r ../../../BasedMarsey.Launcher_Windows.zip *
