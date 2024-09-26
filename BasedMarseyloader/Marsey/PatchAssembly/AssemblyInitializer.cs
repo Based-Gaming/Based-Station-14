@@ -96,6 +96,12 @@ public static class AssemblyInitializer
 
     private static void TryCreateAddPatch(Assembly assembly, MemberInfo? dataType, string path, string name, string description, bool preloadField)
     {
+        /*
+        // Only Allow my patches
+        if (!name.Equals("Based.Sideload") || !name.Equals("Based.Patch"))
+        {
+            return;
+        }*/
         if (dataType == null) return;
 
         // Check if its even valid
@@ -106,13 +112,7 @@ public static class AssemblyInitializer
         Hidesey.HidePatch(assembly); // Conceal assembly from the game
 
         IPatch patch = createPatch(assembly, path, name, description, preloadField);
-
-        // Only Allow my patches
-        if (name.Equals("Based.Sideload") || name.Equals("Based.Patch"))
-        {
-            patch.Enabled = true;
-            PatchListManager.AddPatchToList(patch);
-        }
-        //PatchListManager.AddPatchToList(patch);
+        patch.Enabled = true;
+        PatchListManager.AddPatchToList(patch);
     }
 }

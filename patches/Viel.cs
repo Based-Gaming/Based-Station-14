@@ -74,7 +74,7 @@ static class VielPatch1
 static class VielPatch2
 {
     private static List<string?> HiddenAssemblies = [
-        "BasedCommands", "BasedPatches"];
+        "Based.Commands", "Based.Patches"];
 
     [HarmonyTargetMethod]
     private static MethodBase TargetMethod()

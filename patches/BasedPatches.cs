@@ -23,6 +23,7 @@ public static class MarseyLogger
     }
 }
 
+
 public static class Sedition
 {
     private static bool tripped = false;
@@ -37,6 +38,7 @@ public static class Sedition
         hideDelegate?.Invoke(Assembly.GetExecutingAssembly());
     }
 }
+
 public static class MarseyPatch
 {
     public static string Name = "Based.Patch";

@@ -38,7 +38,6 @@ enum AimMode
     NEAR_MOUSE
 }
 
-
 [HarmonyPatch]
 public static class AimbotPatch
 {

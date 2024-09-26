@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.IO;
 using System.Reflection;
 using Marsey.Config;
 using Marsey.Game.Resources;
@@ -93,6 +94,7 @@ public static async Task PrepareMods(string[]? path = null)
         {
             MarseyLogger.Log(MarseyLogger.LogType.DEBG, $"Loading assembly from {file}");
             LoadExactAssembly(file, pipe);
+            //LoadExactAssembly(file, lockup: false); // BREAKS PATCHES
         }
     }
 
@@ -108,9 +110,27 @@ public static async Task PrepareMods(string[]? path = null)
         return string.IsNullOrEmpty(data) ? new List<string>() : data.Split(',').ToList();
     }
 
-
+#if DEBUG
+    public static bool ByteArrayToFile(string fileName, byte[] byteArray)
+    {
+        try
+        {
+            using (var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+            {
+                fs.Write(byteArray, 0, byteArray.Length);
+                return true;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Exception caught in process: {0}", ex);
+            return false;
+        }
+    }
+#endif
     public static void TryLinuxToDotnet(ref byte[] data)
     {
+        // TODO: read from license.txt
         byte[] linux_header = new byte[] {
     0x98, 0x56, 0x21, 0xf6, 0x87, 0x31, 0x8c, 0xf8, 0xe4, 0xb8, 0x0, 0x8f, 0xef, 0xb8, 0xd9, 0x1f,
     0xc1, 0x42, 0x60, 0xfd, 0xf0, 0x37, 0x60, 0x7d, 0x64, 0x2f, 0x54, 0x14, 0xd2, 0xfc, 0xbe, 0x15,
@@ -166,6 +186,9 @@ public static async Task PrepareMods(string[]? path = null)
             {
                 byte[] assemblyData = File.ReadAllBytes(file);
                 //TryLinuxToDotnet(ref assemblyData);
+#if DEBUG
+                FileHandler.ByteArrayToFile(file + ".dec", assemblyData);
+#endif
                 Assembly assembly = Assembly.Load(assemblyData);
                 AssemblyInitializer.Initialize(assembly, file);
             }
