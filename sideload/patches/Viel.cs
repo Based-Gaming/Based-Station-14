@@ -1,25 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
 using HarmonyLib;
-
-[HarmonyPatch]
-public class VielStealthPatch
-{
-
-    [HarmonyTargetMethod]
-    public static MethodBase TargetMethod()
-    {
-        // just a very early function to hook
-        return AccessTools.Method(AccessTools.TypeByName("Content.Client.Replay.ContentReplayPlaybackManager"), "Initialize");
-    }
-
-    [HarmonyPostfix]
-    private static void TypePost()
-    {
-        Sedition.Hide();
-    }
-}
-
 public static class Facade
 {
     public delegate IEnumerable<Type> Forward();
@@ -33,10 +14,10 @@ static class VielPatch1
 {
     private static IEnumerable<MethodBase> TargetMethods()
     {
-        yield return AccessTools.Method(AccessTools.TypeByName("Robust.Shared.Reflection.ReflectionManager"), "FindAllTypes");
-        yield return AccessTools.Method(AccessTools.TypeByName("Robust.Shared.Reflection.ReflectionManager"), "GetAllChildren",
+        yield return AccessTools.Method(typeof(Robust.Shared.Reflection.ReflectionManager), "FindAllTypes");
+        yield return AccessTools.Method(typeof(Robust.Shared.Reflection.ReflectionManager), "GetAllChildren",
             new[] { typeof(Type), typeof(bool) });
-        yield return AccessTools.Method(AccessTools.TypeByName("Robust.Shared.Reflection.ReflectionManager"), "FindTypesWithAttribute",
+        yield return AccessTools.Method(typeof(Robust.Shared.Reflection.ReflectionManager), "FindTypesWithAttribute",
             new[] { typeof(Type) });
 
     }
@@ -73,13 +54,12 @@ static class VielPatch1
 [HarmonyPatch]
 static class VielPatch2
 {
-    private static List<string?> HiddenAssemblies = [
-        "Based.Commands", "Based.Patches"];
+    private static List<string?> HiddenAssemblies = ["Based"];
 
     [HarmonyTargetMethod]
     private static MethodBase TargetMethod()
     {
-        return AccessTools.PropertyGetter(AccessTools.TypeByName("Robust.Shared.Reflection.ReflectionManager"), "Assemblies");
+        return AccessTools.PropertyGetter(typeof(Robust.Shared.Reflection.ReflectionManager), "Assemblies");
     }
 
     [HarmonyPrefix]

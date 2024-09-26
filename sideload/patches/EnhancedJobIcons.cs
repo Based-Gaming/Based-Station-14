@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using HarmonyLib;
-
 using Content.Shared.StatusIcon.Components;
 using Robust.Shared.GameObjects;
 using Content.Shared.StoreDiscount.Components;
@@ -10,13 +9,14 @@ using Content.Shared.Access.Systems;
 using Robust.Shared.IoC;
 using Content.Shared.CombatMode.Pacification;
 
+
 [HarmonyPatch]
 public static class EnhancedJobIconsPatch
 {
     [HarmonyTargetMethod]
     private static MethodBase TargetMethod()
     {
-        return AccessTools.Method(AccessTools.TypeByName("Content.Client.Overlays.ShowJobIconsSystem"), "OnGetStatusIconsEvent");
+        return AccessTools.Method(typeof(Content.Client.Overlays.ShowJobIconsSystem), "OnGetStatusIconsEvent");
     }
 
     [HarmonyPostfix]

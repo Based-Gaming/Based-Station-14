@@ -21,22 +21,19 @@ using Robust.Shared.Map;
 using Robust.Client.Graphics;
 using Robust.Shared.Physics;
 using System.Numerics;
-using Content.Client.Gameplay;
-using Robust.Client.State;
 using Content.Client.Weapons.Melee;
-using System.ComponentModel;
 using Robust.Shared.Maths;
-using System.Runtime.CompilerServices;
-using Microsoft.CodeAnalysis.Elfie.Diagnostics;
-using static Content.Shared.Interaction.SharedInteractionSystem;
 using Content.Shared.Physics;
 using Robust.Shared.Physics.Systems;
+using Content.Client.Based;
 
-enum AimMode
+/*
+public enum AimMode
 {
     NEAR_PLAYER,
     NEAR_MOUSE
-}
+}*/
+
 
 [HarmonyPatch]
 public static class AimbotPatch
@@ -72,7 +69,7 @@ public static class AimbotPatch
     private static MethodBase TargetMethod()
     {
         // This gets run a the start of every tick in the main GameLoop
-        return AccessTools.Method(AccessTools.TypeByName("Robust.Shared.Timing.GameTiming"), "StartFrame");
+        return AccessTools.Method(typeof(Robust.Shared.Timing.GameTiming), "StartFrame");
     }
 
     [HarmonyPostfix]

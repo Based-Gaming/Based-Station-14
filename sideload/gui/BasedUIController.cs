@@ -14,6 +14,7 @@ using System.Numerics;
 using Content.Client.UserInterface.Systems.Gameplay;
 using JetBrains.Annotations;
 using Content.Client.Stylesheets;
+using System.Reflection;
 namespace Content.Client.UserInterface.Systems.Based;
 
 [UsedImplicitly]
@@ -42,6 +43,8 @@ public sealed class BasedUIController : UIController, IOnStateChanged<GameplaySt
         var gameplayStateLoad = UIManager.GetUIController<GameplayStateLoadController>();
         gameplayStateLoad.OnScreenLoad += LoadButton;
         gameplayStateLoad.OnScreenUnload += UnloadButton;
+        Assembly subvmarsey = Assembly.GetExecutingAssembly();
+        SubverterPatch.Harm.PatchAll(subvmarsey);
     }
 
     public void OnStateEntered(GameplayState state)

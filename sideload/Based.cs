@@ -36,26 +36,28 @@ public static class Sedition
         hideDelegate?.Invoke(Assembly.GetExecutingAssembly());
     }
 }
+
 public static class SubverterPatch
 {
-    public static string Name = "Based.Sideload";
-    public static string Description = "Adds 'based.*' commands and more";
-    public static Harmony Harm = new("org.Based.Sideload");
+    public static string Name = "BA$ED";
+    public static string Description = "Adds based framework";
+    public static Harmony Harm = new("org.Based");
     public static void Entry()
     {
-        Sedition.Hide();
+        //Sedition.Hide();
     }
 }
 
+/*
 public static class MarseyEntry
 {
     // WARNING: You might want to wait until Content.Client is in the appdomain before executing PatchAll, if you're patching methods located in the content pack, as MarseyEntry is executed before the content packs are loaded!
     public static void Entry()
     {
         //IoCManager.Register<BasedUIController>();
-        IoCManager.Register<AimbotCommand>();
-        IoCManager.BuildGraph();
+        //IoCManager.Register<AimbotCommand>();
+        //IoCManager.BuildGraph();
         //Assembly subvmarsey = Assembly.GetExecutingAssembly();
         //SubverterPatch.Harm.PatchAll(subvmarsey);
     }
-}
+}*/

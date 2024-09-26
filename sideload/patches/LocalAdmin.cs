@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using Content.Shared.Administration;
 using HarmonyLib;
 
 [HarmonyPatch]
@@ -9,9 +8,8 @@ static class LocalAdminPatch
     private static IEnumerable<MethodBase> TargetMethods()
     {
         // Enables all commands and ViewVariables
-        yield return AccessTools.Method(AccessTools.TypeByName("Robust.Client.Console.ClientConsoleHost"), "CanExecute");
-        yield return AccessTools.Method(AccessTools.TypeByName("Content.Client.Administration.Managers.ClientAdminManager"), "CanCommand");
-        yield return AccessTools.Method(AccessTools.TypeByName("Content.Client.Administration.Managers.ClientAdminManager"), "CanScript");
+        yield return AccessTools.Method(typeof(Content.Client.Administration.Managers.ClientAdminManager), "CanCommand");
+        yield return AccessTools.Method(typeof(Content.Client.Administration.Managers.ClientAdminManager), "CanScript");
 
 #if DEBUG
         // The admin menu is really only useful for the `Objects` Tab.
