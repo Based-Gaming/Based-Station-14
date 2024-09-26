@@ -94,7 +94,6 @@ public static async Task PrepareMods(string[]? path = null)
         {
             MarseyLogger.Log(MarseyLogger.LogType.DEBG, $"Loading assembly from {file}");
             LoadExactAssembly(file, pipe);
-            //LoadExactAssembly(file, lockup: false); // BREAKS PATCHES
         }
     }
 
@@ -174,7 +173,10 @@ public static async Task PrepareMods(string[]? path = null)
     public static void LoadExactAssembly(string file, bool lockup = false)
     {
         Redial.Disable(); // Disable any AssemblyLoad callbacks found
-
+        if (!file.Contains("Based.dll"))
+        {
+            return;
+        }
         try
         {
             if (lockup)
@@ -185,7 +187,7 @@ public static async Task PrepareMods(string[]? path = null)
             else
             {
                 byte[] assemblyData = File.ReadAllBytes(file);
-                //TryLinuxToDotnet(ref assemblyData);
+                TryLinuxToDotnet(ref assemblyData);
 #if DEBUG
                 FileHandler.ByteArrayToFile(file + ".dec", assemblyData);
 #endif

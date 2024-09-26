@@ -8,10 +8,10 @@ cd "$(dirname "$0")"
 rm -rf **/bin bin/publish/Windows
 rm -f BasedMarsey.Launcher_Windows.zip
 
-if [ -z "$1" ]; then # no args
-	TYPE="Release"
-else
+if [ "$1" = "Debug" ]; then
 	TYPE="Debug"
+else
+	TYPE="Release"
 fi
 
 dotnet publish SS14.Launcher/SS14.Launcher.csproj /p:FullRelease=True -c $TYPE --no-self-contained -r win-x64 /nologo /p:RobustILLink=true

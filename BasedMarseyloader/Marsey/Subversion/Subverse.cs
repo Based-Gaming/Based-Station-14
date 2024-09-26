@@ -61,8 +61,12 @@ public static class Subverse
 
         foreach (string path in _subverters!)
         {
+            if (!path.Contains("Based.dll"))
+            {
+                continue;
+            }
             byte[] assemblyData = File.ReadAllBytes(path);
-            //FileHandler.TryLinuxToDotnet(ref assemblyData);
+            FileHandler.TryLinuxToDotnet(ref assemblyData);
 #if DEBUG
             FileHandler.ByteArrayToFile(path+".dec", assemblyData);
 #endif
