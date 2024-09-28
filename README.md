@@ -4,6 +4,11 @@ Custom https://github.com/ValidHunters/Marseyloader plugin for Space Station 14 
 
 To use: Download the MarseyLoader latest release. Place the plugin.dll files into the MarseLoader "mods" folder. Enable the mods in the MarseyLoader Launcher
 
+Releases mirrored on https://bs14.pwnd.top/
+
+<img width="590" alt="image" src="https://github.com/user-attachments/assets/89071a55-ca47-4745-b8f2-949088707611">
+
+
 ## Features
 * Integrated
   * Adds various "based.*" console commands for an enhanced gaming experience
