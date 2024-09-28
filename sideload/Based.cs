@@ -44,7 +44,7 @@ public static class SubverterPatch
     public static Harmony Harm = new("org.Based");
     public static void Entry()
     {
-        //Sedition.Hide();
+        Sedition.Hide();
     }
 }
 

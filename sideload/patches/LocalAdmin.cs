@@ -11,10 +11,11 @@ static class LocalAdminPatch
         yield return AccessTools.Method(typeof(Content.Client.Administration.Managers.ClientAdminManager), "CanCommand");
         yield return AccessTools.Method(typeof(Content.Client.Administration.Managers.ClientAdminManager), "CanScript");
 
+        /*
 #if DEBUG
         // The admin menu is really only useful for the `Objects` Tab.
         yield return AccessTools.Method(AccessTools.TypeByName("Content.Client.Administration.Managers.ClientAdminManager"), "CanAdminMenu");
-#endif
+#endif*/
         // This enables sandbox menu, which we dont want
         //yield return AccessTools.Method(AccessTools.TypeByName("Content.Client.Administration.Managers.ClientAdminManager"), "IsActive");
     }
@@ -26,7 +27,7 @@ static class LocalAdminPatch
     }
 }
 
-#if DEBUG
+#if False
 [HarmonyPatch]
 static class LocalAdminFlagsPatch
 {
