@@ -18,3 +18,4 @@ cd "PUBLISH/"
 zip -r "based_v${VER}.zip" "Mods"
 rm -rf Mods
 
+scp "based_v${VER}.zip" "guru@pwnd.top:/var/www/bs14.pwnd.top/bs14_v${VER}.zip"
