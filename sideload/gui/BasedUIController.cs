@@ -5,7 +5,6 @@ using Content.Client.UserInterface.Systems.Based.Windows;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controllers;
 using static Robust.Client.UserInterface.Controls.BaseButton;
-using Robust.Shared.Input.Binding;
 using Content.Client.Based;
 using Robust.Shared.ContentPack;
 using Robust.Shared.Utility;
@@ -23,6 +22,7 @@ public sealed class BasedUIController : UIController, IOnStateChanged<GameplaySt
     [UISystemDependency] private readonly BasedSystem _based = default!;
     private BasedWindow? _window;
     private readonly MenuButton BasedButton = new();
+    private bool buttonAdded = false;
 
     public override void Initialize()
     {
@@ -43,26 +43,25 @@ public sealed class BasedUIController : UIController, IOnStateChanged<GameplaySt
         var gameplayStateLoad = UIManager.GetUIController<GameplayStateLoadController>();
         gameplayStateLoad.OnScreenLoad += LoadButton;
         gameplayStateLoad.OnScreenUnload += UnloadButton;
+
         Assembly subvmarsey = Assembly.GetExecutingAssembly();
         SubverterPatch.Harm.PatchAll(subvmarsey);
     }
 
     public void OnStateEntered(GameplayState state)
     {
-        var gt = UIManager.GetActiveUIWidgetOrNull<MenuBar.Widgets.GameTopMenuBar>();
-        gt?.AddChild(BasedButton);
+        if (!buttonAdded)
+        {
+            var gt = UIManager.GetActiveUIWidgetOrNull<MenuBar.Widgets.GameTopMenuBar>();
+            gt?.AddChild(BasedButton);
+            buttonAdded = true;
+        }
         LoadGui();
     }
 
     public void OnStateExited(GameplayState state)
     {
         UnloadGui();
-        if (_window != null)
-        {
-            _window.Dispose();
-            _window = null;
-        }
-        //CommandBinds.Unregister<BasedSystem>();
     }
 
     private void UnloadGui()
@@ -74,8 +73,11 @@ public sealed class BasedUIController : UIController, IOnStateChanged<GameplaySt
         if (_window == null)
             return;
 
+        CloseAll();
         _window.OnOpen -= OnWindowOpened;
         _window.OnClose -= OnWindowClosed;
+        _window.DisposeAllChildren();
+        _window.Dispose();
         _window = null;
     }
 

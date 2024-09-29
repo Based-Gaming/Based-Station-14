@@ -59,7 +59,7 @@ public static class EnhancedJobIconsPatch
         //
         if (_entityManager.TryGetComponent<PacifiedComponent>(uid, out var pacComp))
         {
-            if (_prototype.TryIndex<FactionIconPrototype>("Unknown", out var iconPrototype))
+            if (_prototype.TryIndex<JobIconPrototype>("StationAi", out var iconPrototype))
             {
                 ev.StatusIcons.Add(iconPrototype);
             }

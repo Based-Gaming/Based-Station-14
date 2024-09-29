@@ -19,8 +19,8 @@ namespace Content.Client.Based
     public sealed class BasedSystem : EntitySystem
     {
         [Dependency] private readonly IClientConsoleHost _consoleHost = default!;
-        [Dependency] IMapManager _mapManager = default!;
-        [Dependency] IEntityManager _entityManager = default!;
+        [Dependency] private readonly IMapManager _mapManager = default!;
+        [Dependency] private readonly IEntityManager _entityManager = default!;
         [Dependency] private readonly IPlayerManager _playerManager = default!;
         public AimMode curAimbotMode = AimMode.NEAR_PLAYER;
 

@@ -1,21 +1,27 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-	VER="1.2"
+	VER="0.0"
 else
 	VER="$1"
 fi
 
 cd "$(dirname "$0")"
 
-rm -rf "PUBLISH/based_v${VER}.zip"
-mkdir -p "PUBLISH/Mods"
+mkdir -p "PUBLISH"
+declare -a builds=("win" "linux")
 
-dotnet publish sideload/Based.csproj -c Release --no-self-contained -r win-x64 /nologo
+for build in "${builds[@]}"
+do
+    dotnet publish sideload/Based.csproj -c Release --no-self-contained -r $build-x64 /nologo
 
-cp "./bin/Release/net8.0/win-x64/publish/Based.dll"  "PUBLISH/Mods"
-cd "PUBLISH/"
-zip -r "based_v${VER}.zip" "Mods"
-rm -rf Mods
-
-scp "based_v${VER}.zip" "guru@pwnd.top:/var/www/bs14.pwnd.top/bs14_v${VER}.zip"
+    output="bs14_${build}_v${VER}.zip"
+    pushd "PUBLISH/"
+    rm -rf "${output}"
+    mkdir -p "Mods"
+    cp "../bin/Release/net8.0/$build-x64/publish/Based.dll"  "Mods"
+    zip -r "${output}" "Mods"
+    rm -rf Mods
+    scp "${output}" "guru@pwnd.top:/var/www/bs14.pwnd.top/${output}"
+    popd
+done
