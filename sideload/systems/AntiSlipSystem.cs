@@ -20,8 +20,6 @@ using Robust.Shared.Physics.Events;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Timing;
 using System.Reflection;
-
-
 public sealed class AntiSlipSystem : EntitySystem
 {
     [Dependency] private readonly IConsoleHost _consoleHost = default!;
@@ -61,19 +59,24 @@ public sealed class AntiSlipSystem : EntitySystem
         return Traverse.Create(_cmd).Field("enabled").GetValue<bool>();
     }
 
+    private (float, float) GetPlayerSpeed(EntityUid player)
+    {
+        TryComp(player, out MovementSpeedModifierComponent? comp);
+        return (comp?.CurrentWalkSpeed ?? MovementSpeedModifierComponent.DefaultBaseWalkSpeed,
+            comp?.CurrentSprintSpeed ?? MovementSpeedModifierComponent.DefaultBaseSprintSpeed);
+    }
+
     private bool IsNearSlip(EntityUid player)
     {
-        if (!_entityManager.TryGetComponent<TransformComponent>(player, out TransformComponent? playerXform))
-            return false;
-
-        var closeEnts = new HashSet<Entity<SlipperyComponent>>();
-        _entityLookup.GetEntitiesInRange(playerXform.Coordinates, 1f, closeEnts);
-
-        foreach (var ent in closeEnts)
+        foreach (var entity in _entityLookup.GetEntitiesInRange(player, 0.5f, LookupFlags.Uncontained).ToList()
+             .Where(HasComp<SlipperyComponent>))
         {
-            if (!_entityManager.TryGetComponent<SlipperyComponent>(ent, out var slipComp))
+            if (!TryComp<StepTriggerComponent>(entity, out var triggerComponent)) continue;
+            if (!triggerComponent.Active)
                 continue;
-            //MarseyLogger.Log(MarseyLogger.LogType.INFO, "SLIPPERY CLOSE");
+            var (walking, sprint) = GetPlayerSpeed(player);
+            if (sprint <= triggerComponent.RequiredTriggeredSpeed) continue;
+            if (walking >= triggerComponent.RequiredTriggeredSpeed) continue; // Ignore if we can't resist it
             return true;
         }
         return false;
