@@ -1,9 +1,6 @@
-#if DEBUG
 using Content.Shared.Administration;
 using Robust.Shared.Console;
 using Robust.Shared.Toolshed.Commands.Generic;
-
-namespace BasedCommands.ShowJobsCommand;
 
 [AnyCommand] 
 public sealed class AntiSlipCommand : IConsoleCommand
@@ -26,4 +23,3 @@ public sealed class AntiSlipCommand : IConsoleCommand
         this.enabled = !this.enabled;
     }
 }
-#endif
