@@ -1,7 +1,6 @@
 ﻿using Robust.Shared.Map;
 using Robust.Shared.GameObjects;
 using Content.Client.Examine;
-using Content.Client.Power.Generation.Teg;
 using Content.Shared.Electrocution;
 using Robust.Shared.Serialization.Manager.Attributes;
 using Robust.Shared.Prototypes;
