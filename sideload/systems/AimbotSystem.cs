@@ -32,6 +32,7 @@ using YamlDotNet.Core.Tokens;
 using Content.Shared.Pinpointer;
 using static Robust.Client.GameObjects.SpriteComponent;
 
+namespace Based.Systems;
 
 [HarmonyPatch]
 public static class AimbotPatch
@@ -335,7 +336,7 @@ public sealed class AimbotSystem : EntitySystem
         } // usekey down
     }
 
-    public void shoot(GunComponent gun, EntityUid gunUid, EntityUid target, EntityCoordinates coordinates)
+    private void shoot(GunComponent gun, EntityUid gunUid, EntityUid target, EntityCoordinates coordinates)
     {
         if (gun.NextFire > _timing.CurTime)
             return;
