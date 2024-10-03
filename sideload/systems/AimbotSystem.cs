@@ -26,6 +26,11 @@ using Robust.Shared.Physics;
 using Robust.Shared.GameObjects;
 using System.Reflection;
 using System;
+using Robust.Shared.Physics.Components;
+using Content.Shared.Mobs;
+using YamlDotNet.Core.Tokens;
+using Content.Shared.Pinpointer;
+using static Robust.Client.GameObjects.SpriteComponent;
 
 
 [HarmonyPatch]
@@ -138,25 +143,80 @@ public sealed class AimbotSystem : EntitySystem
         return true;
     }
 
-    private bool GetMouseDistance(EntityUid target, out float distance)
+    private bool Filter(Entity<TransformComponent> ent)
     {
-        distance = 0f;
-        MapCoordinates mouseMapCoord = _eye.PixelToMap(_inputManager.MouseScreenPosition);
-        if (mouseMapCoord.MapId == MapId.Nullspace)
-            return false; // mouse in nullspace
-
-        distance = Math.Abs(Vector2.Distance(mouseMapCoord.Position, _ts.GetWorldPosition(target)));
-        //_inputManager.MouseScreenPosition.
-        //distance = (mouseMapCoord.Position - _ts.ToMapCoordinates(targetXform.Coordinates).Position).Length();
-        //return true;
-        //distance = Angle.ShortestDistance(mouseMapCoord.Position.ToWorldAngle(),  targetXform.WorldPosition.ToWorldAngle());
-        return true;
-        /*
-        EntityCoordinates mouseCoords = _ts.ToCoordinates(entity, mouseMapCoord);
-        if (!targetXform.Coordinates.TryDistance(_entityManager, mouseCoords, out distance))
+        if (ent.Comp.MapID != _eye.CurrentMap) return false;
+        if (!TryComp(ent, out MobStateComponent? state))
             return false;
+        if (state.CurrentState != MobState.Alive) return false;
+        // if we are ratking TODO
         return true;
-        */
+    }
+
+    private float EntDistance(EntityUid e1, EntityUid e2)
+    {
+        var entityMapPos = _ts.GetMapCoordinates(Transform(e1));
+        var pos2 = _ts.GetMapCoordinates(Transform(e2));
+        var vector = pos2.Position - entityMapPos.Position;
+        return vector.Length();
+    }
+    private EntityUid? GetClosestTo(MapCoordinates coordinates, HashSet<EntityUid> entities)
+    {
+        MapCoordinates? closestCoordinates = null;
+        EntityUid player = _playerMan.LocalEntity.Value;
+        EntityUid? closestEntity = null;
+        var closestDistance = float.MaxValue;
+        foreach (var ent in entities)
+        {
+            var transform = Transform(ent);
+            if (!Filter((ent, transform)))
+                continue;
+            var entityMapPos = _ts.GetMapCoordinates(transform);
+            var vector = coordinates.Position - entityMapPos.Position;
+            var distance = vector.Length();
+            if (!(distance < closestDistance)) continue;
+            // Do not target if they are not in range un-obstructed from our player
+            if (!_is.InRangeUnobstructed(player, ent, EntDistance(player, ent) + 0.1f))
+                continue;
+            closestCoordinates = entityMapPos;
+            closestDistance = distance;
+            closestEntity = ent;
+        }
+
+        if (closestEntity is null)
+            return null;
+
+        return closestEntity;
+    }
+    public EntityUid? GetClosestInRange(
+    MapCoordinates coordinates,
+    float range,
+    HashSet<EntityUid>? exclude = null)
+    {
+        var entitiesInRange = _entityLookup.GetEntitiesInRange(coordinates, range, LookupFlags.Uncontained);
+
+        if (exclude != null)
+            entitiesInRange.ExceptWith(exclude);
+
+        return GetClosestTo(coordinates, entitiesInRange);
+    }
+
+    private EntityUid? GetTarget(EntityUid player, AimMode mode, float playerRange)
+    {
+        var exclude = new HashSet<EntityUid>();
+        exclude.Add(player); // never target ourself...
+
+        switch (mode)
+        {
+            case AimMode.NEAR_PLAYER:
+                return GetClosestInRange(_ts.GetMapCoordinates(Transform(player)), playerRange, exclude);
+            case AimMode.NEAR_MOUSE:
+                var entitiesInRange = _entityLookup.GetEntitiesInRange(Transform(player).Coordinates, playerRange, LookupFlags.Uncontained);
+                entitiesInRange.ExceptWith(exclude);
+                return GetClosestTo(_eye.PixelToMap(_inputManager.MouseScreenPosition), entitiesInRange);
+            default:
+                return null;
+        }
     }
 
     public override void FrameUpdate(float frameTime)
@@ -190,7 +250,6 @@ public sealed class AimbotSystem : EntitySystem
                 return;
         }
 
-
         var useDown = _inputSystem.CmdStates.GetState(EngineKeyFunctions.Use);
         var altDown = _inputSystem.CmdStates.GetState(EngineKeyFunctions.UseSecondary);
 
@@ -203,72 +262,18 @@ public sealed class AimbotSystem : EntitySystem
         if (!EntityManager.TryGetComponent<TransformComponent>(player, out TransformComponent? userXform))
             return;
 
-        /* Get all targets in range */
-        var targets = new HashSet<Entity<MobStateComponent>>();
-        if (meleeWeapon != null)
-            _entityLookup.GetEntitiesInRange(userXform.Coordinates, meleeWeapon.Range, targets);
-        else
-            _entityLookup.GetEntitiesInRange(userXform.Coordinates, 10f, targets);
-
-        // Get closest target
+        /* Get target  */
         EntityUid? target = null;
-        float lastDistance = 0f;
-        TransformComponent? targetxform = null;
-
-        foreach (var targ in targets)
+        if (meleeWeapon != null)
         {
-            float mouseDistance = 0f;
-            if (targ.Owner.Id == player.Id)
-                continue; // skip ourself...
+            target = GetTarget(player, mode, meleeWeapon.Range);
+        }
+        else if (gun != null)
+        {
+            target = GetTarget(player, mode, 10f);
+        }
 
-            if (!EntityManager.TryGetComponent<TransformComponent>(targ.Owner, out TransformComponent? xform))
-                continue;
-
-            if (userXform.MapID != xform.MapID)
-                continue;
-
-            if (!userXform.Coordinates.TryDistance(_entityManager, xform.Coordinates, out var playerDistance))
-                continue;
-
-
-            if (mode == AimMode.NEAR_MOUSE)
-            {
-                if (!GetMouseDistance(targ.Owner, out mouseDistance))
-                    continue;
-            }
-
-            if (target == null)
-            {
-                // only target if they are in line-of-sight for guns
-                if (gun != null && !_is.InRangeUnobstructed(player, targ.Owner, playerDistance + 0.1f))
-                    continue;
-                target = targ.Owner;
-                lastDistance = playerDistance;
-                targetxform = xform;
-
-            }
-            else if ((mode == AimMode.NEAR_PLAYER) && (playerDistance < lastDistance))
-            {
-                // only target if they are in line-of-sight for guns
-                if (gun != null && !_is.InRangeUnobstructed(player, targ.Owner, playerDistance + 0.1f))
-                    continue;
-                target = targ.Owner;
-                lastDistance = playerDistance;
-                targetxform = xform;
-            }
-            else if ((mode == AimMode.NEAR_MOUSE) && (mouseDistance < lastDistance))
-            {
-                // only target if they are in line-of-sight for guns
-                if (gun != null && !_is.InRangeUnobstructed(player, targ.Owner, playerDistance + 0.1f))
-                    continue;
-                target = targ.Owner;
-                lastDistance = mouseDistance;
-                targetxform = xform;
-            }
-        } // foreach tar in targets
-
-        if (target == null || targetxform == null)
-            return;
+        if (target == null) return;
 
         if (useDown == BoundKeyState.Down)
         {
@@ -279,7 +284,7 @@ public sealed class AimbotSystem : EntitySystem
                     (
                         EntityManager.GetNetEntity(target),
                         EntityManager.GetNetEntity(weaponUid),
-                        EntityManager.GetNetCoordinates(targetxform.Coordinates)
+                        EntityManager.GetNetCoordinates(Transform(target.Value).Coordinates)
                     )
                  );
                 return;
@@ -288,8 +293,8 @@ public sealed class AimbotSystem : EntitySystem
             {
                 // Shoot
                 // Define target coordinates relative to gunner entity, so that network latency on moving grids doesn't fuck up the target location.
-                var coordinates = _ts.ToCoordinates(player, targetxform.MapPosition);
-                this.shoot(player, gun, weaponUid, EntityManager.GetNetEntity(target).Value, coordinates);
+                var coordinates = _ts.ToCoordinates(player, Transform(target.Value).MapPosition);
+                this.shoot(gun, weaponUid, target.Value, coordinates);
                 return;
             }
         }
@@ -301,14 +306,14 @@ public sealed class AimbotSystem : EntitySystem
                 _entityManager.RaisePredictiveEvent(new DisarmAttackEvent
                     (
                         _entityManager.GetNetEntity(target),
-                        _entityManager.GetNetCoordinates(targetxform.Coordinates)
+                        _entityManager.GetNetCoordinates(Transform(target.Value).Coordinates)
                     )
                 );
             }
             else
             {
 
-                MapCoordinates targetMap = _ts.ToMapCoordinates(targetxform.Coordinates);
+                MapCoordinates targetMap = _ts.ToMapCoordinates(Transform(target.Value).Coordinates);
 
                 if (targetMap.MapId != userXform.MapID)
                     return;
@@ -323,23 +328,21 @@ public sealed class AimbotSystem : EntitySystem
                 _entityManager.RaisePredictiveEvent(new HeavyAttackEvent(
                     _entityManager.GetNetEntity(weaponUid),
                     entities.GetRange(0, Math.Min(5, entities.Count)),
-                    _entityManager.GetNetCoordinates(targetxform.Coordinates)
+                    _entityManager.GetNetCoordinates(Transform(target.Value).Coordinates)
                     ));
             }
             return;
         } // usekey down
     }
 
-    private void shoot(EntityUid player, GunComponent gun, EntityUid gunUid, NetEntity target, EntityCoordinates coordinates)
+    public void shoot(GunComponent gun, EntityUid gunUid, EntityUid target, EntityCoordinates coordinates)
     {
-        var entity = player;
-
         if (gun.NextFire > _timing.CurTime)
             return;
 
         EntityManager.RaisePredictiveEvent(new RequestShootEvent
         {
-            Target = target,
+            //Target = EntityManager.GetNetEntity(target),
             Coordinates = GetNetCoordinates(coordinates),
             Gun = GetNetEntity(gunUid),
         });

@@ -48,16 +48,14 @@ public static class SubverterPatch
     }
 }
 
-/*
+#if false
 public static class MarseyEntry
 {
     // WARNING: You might want to wait until Content.Client is in the appdomain before executing PatchAll, if you're patching methods located in the content pack, as MarseyEntry is executed before the content packs are loaded!
     public static void Entry()
     {
-        //IoCManager.Register<BasedUIController>();
-        //IoCManager.Register<AimbotCommand>();
-        //IoCManager.BuildGraph();
-        //Assembly subvmarsey = Assembly.GetExecutingAssembly();
-        //SubverterPatch.Harm.PatchAll(subvmarsey);
+        IoCManager.BuildGraph();
+        IoCManager.InjectDependencies(this);
     }
-}*/
+}
+#endif

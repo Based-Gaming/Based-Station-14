@@ -16,9 +16,7 @@ public sealed partial class BasedWindow : DefaultWindow
     public Button ShowJobIconsButton = new ();
     public Button ToggleLightButton = new();
     public Button ToggleSubfloorButton = new();
-#if DEBUG
     public Button ToggleAntiSlipButton = new();
-#endif
     public Button ToggleAimbotButton = new();
     public RadioOptions<AimMode> aimbotMode = new(new RadioOptionsLayout ());
     public Button NukieIndicator = new();
@@ -51,12 +49,10 @@ public sealed partial class BasedWindow : DefaultWindow
         ToggleSubfloorButton.Access = AccessLevel.Public;
         ToggleSubfloorButton.ToggleMode = true;
 
-#if DEBUG
         ToggleAntiSlipButton.Text = "Toggle AntiSlip";
         ToggleAntiSlipButton.Name = "ToggleAntiSlipButton";
         ToggleAntiSlipButton.Access = AccessLevel.Public;
         ToggleAntiSlipButton.ToggleMode = true;
-#endif
 
         ToggleAimbotButton.Text = "Toggle Aimbot";
         ToggleAimbotButton.Name = "ToggleAimbotButton";
@@ -80,10 +76,7 @@ public sealed partial class BasedWindow : DefaultWindow
         box.AddChild(ShowJobIconsButton);
         box.AddChild(ToggleLightButton);
         box.AddChild(ToggleSubfloorButton);
-#if DEBUG
-
         box.AddChild(ToggleAntiSlipButton);
-#endif
 
         box.AddChild(ToggleAimbotButton);
         box.AddChild(aimbotMode);
@@ -114,6 +107,5 @@ public sealed partial class BasedWindow : DefaultWindow
         this.aimbotMode.Select(args.Id);
 
         this._based.ToggleAimbot(true);
-        //_consoleHost.ExecuteCommand("based.aimbot " + _based.curAimbotMode.ToString() + "update_mode_only");
     }
 }

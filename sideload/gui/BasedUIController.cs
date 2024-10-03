@@ -93,9 +93,7 @@ public sealed class BasedUIController : UIController, IOnStateChanged<GameplaySt
         _window.ShowJobIconsButton.OnPressed += _ => _based.ShowJobs();
         _window.ToggleLightButton.OnToggled += _ => _based.ToggleLight();
         _window.ToggleSubfloorButton.OnPressed += _ => _based.ToggleSubFloor();
-#if DEBUG
         _window.ToggleAntiSlipButton.OnPressed += _ => _based.ToggleAntiSlip();
-#endif
 
         _window.ToggleAimbotButton.OnPressed += _ => _based.ToggleAimbot();
         _window.NukieIndicator.OnPressed += _ => _based.RecheckNukies(_window.NukieIndicator);

@@ -1,12 +1,10 @@
 ﻿using Robust.Client.Console;
 using Robust.Client.Player;
 using Robust.Client.UserInterface.Controls;
-using Robust.Shared.Console;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
-using static HarmonyLib.Code;
 
 namespace Content.Client.Based
 {
@@ -50,13 +48,11 @@ namespace Content.Client.Based
             _consoleHost.ExecuteCommand("based.subfloor");
         }
 
-#if DEBUG
         public void ToggleAntiSlip()
         {
             _consoleHost.ExecuteCommand("based.antislip");
         }
 
-#endif
         public void RecheckNukies(Button NukieIndicator)
         {
             NukieIndicator.Pressed = false;

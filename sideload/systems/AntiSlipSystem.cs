@@ -1,8 +1,4 @@
-﻿using Content.Client.Interactable;
-using Content.Client.Weapons.Melee;
-using Content.Client.Weapons.Ranged.Systems;
-using Content.Shared.Mobs.Components;
-using Content.Shared.Movement.Components;
+﻿using Content.Shared.Movement.Components;
 using Content.Shared.Slippery;
 using Content.Shared.StepTrigger.Components;
 using HarmonyLib;
@@ -14,12 +10,8 @@ using Robust.Shared.Console;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Input;
 using Robust.Shared.IoC;
-using Robust.Shared.Map;
-using Robust.Shared.Physics;
-using Robust.Shared.Physics.Events;
-using Robust.Shared.Physics.Systems;
 using Robust.Shared.Timing;
-using System.Reflection;
+
 public sealed class AntiSlipSystem : EntitySystem
 {
     [Dependency] private readonly IConsoleHost _consoleHost = default!;
