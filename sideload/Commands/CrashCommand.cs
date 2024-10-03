@@ -12,9 +12,9 @@ using Content.Client.Weapons.Ranged.Systems;
 
 
 [AnyCommand]
-public sealed class CrashCommand : IConsoleCommand
+public sealed class TestCommand : IConsoleCommand
 {
-    public string Command => "based.crash";
+    public string Command => "based.test";
     public string Description => "test";
     public string Help => "HELP!";
 
@@ -27,30 +27,22 @@ public sealed class CrashCommand : IConsoleCommand
 
 
         // SERVER CRASH WHEN HOLDING A GUN
-        shell.WriteLine("Crashing server...");
-        if (_playerMan.LocalEntity == null)
-        {
-            shell.WriteError("no player");
-            return;
-        }
-       var player = _playerMan.LocalEntity.Value;
+        shell.WriteLine("Test BEGIN");
+        var player = _playerMan.LocalEntity.Value;
         var _gun = _entityManager.System<GunSystem>();
         if (!_gun.TryGetGun(player, out var weaponUid, out GunComponent? gun))
-        {
-            shell.WriteError("Must be holding a gun to trigger exploit");
-            return;
-        }
-
-        if (!_entityManager.TryGetComponent<TransformComponent>(player, out TransformComponent? xform))
             return;
 
-        // Trigger NaN fromTimeSpan error in TryThrow on magazine cart ejection
+            if (!_entityManager.TryGetComponent<TransformComponent>(player, out TransformComponent? xform))
+            return;
+
         _entityManager.RaisePredictiveEvent(new RequestShootEvent
         {
             Target = _entityManager.GetNetEntity(player),
             Coordinates = _entityManager.GetNetCoordinates(xform.Coordinates),
             Gun = _entityManager.GetNetEntity(weaponUid),
         });
+        shell.WriteLine("Test END");
     }
 }
 #endif
