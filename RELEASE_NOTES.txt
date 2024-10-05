@@ -1,0 +1,11 @@
+# RELEASE NOTES
+
+## Features
+* Antislip
+* Aimbot (melee and ranged) - 2 modes
+* Walls / ESP / lights
+* subfloor toggle (t-ray)
+* Show Jobs (also marks traitors with syndicate icon)
+* NukeOps detector
+* Budget Insuls sparkle on examine if they are safe to use. (budget insul detector)
+

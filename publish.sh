@@ -25,3 +25,4 @@ do
     scp "${output}" "guru@pwnd.top:/var/www/bs14.pwnd.top/${output}"
     popd
 done
+scp "RELEASE_NOTES.txt" "guru@pwnd.top:/var/www/bs14.pwnd.top/RELEASE_NOTES.txt"
