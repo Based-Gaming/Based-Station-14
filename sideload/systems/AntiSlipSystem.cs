@@ -1,12 +1,11 @@
-﻿using Content.Shared.Movement.Components;
+﻿using Content.Client.Based;
+using Content.Shared.Movement.Components;
 using Content.Shared.Slippery;
 using Content.Shared.StepTrigger.Components;
-using HarmonyLib;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
 using Robust.Client.Player;
-using Robust.Shared.Console;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Input;
 using Robust.Shared.IoC;
@@ -14,7 +13,6 @@ using Robust.Shared.Timing;
 
 public sealed class AntiSlipSystem : EntitySystem
 {
-    [Dependency] private readonly IConsoleHost _consoleHost = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly IEntityManager _entityManager = default!;
     [Dependency] private readonly EntityLookupSystem _entityLookup = default!;
@@ -26,7 +24,6 @@ public sealed class AntiSlipSystem : EntitySystem
 
     private bool _changed = false;
     private bool _forcePressWalk;
-    private IConsoleCommand? _cmd = null;
 
     public override void Initialize()
     {
@@ -35,20 +32,7 @@ public sealed class AntiSlipSystem : EntitySystem
 
     private bool IsAntiSlipEnabled()
     {
-        if (_cmd == null)
-        {
-            foreach (var kvp in _consoleHost.AvailableCommands)
-            {
-                if (kvp.Key.Equals("based.antislip"))
-                {
-                    _cmd = kvp.Value;
-                    break;
-                }
-            }
-            if (_cmd == null)
-                return false;
-        }
-        return Traverse.Create(_cmd).Field("enabled").GetValue<bool>();
+        return _entityManager.System<BasedSystem>().AntiSlipEnabled;
     }
 
     private (float, float) GetPlayerSpeed(EntityUid player)

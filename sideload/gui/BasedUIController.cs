@@ -124,6 +124,7 @@ public sealed class BasedUIController : UIController, IOnStateChanged<GameplaySt
     private void OnWindowOpened()
     {
         BasedButton?.SetClickPressed(true);
+        _window?.UpdateToggleStates();
     }
 
     private void OnWindowClosed()

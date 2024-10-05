@@ -5,6 +5,7 @@ using Content.Client.Based;
 using Robust.Client.Console;
 using Robust.Shared.IoC;
 using Robust.Shared.Utility;
+using Robust.Client.Graphics;
 
 namespace Content.Client.UserInterface.Systems.Based.Windows;
 
@@ -54,6 +55,7 @@ public sealed partial class BasedWindow : DefaultWindow
         ToggleAntiSlipButton.Access = AccessLevel.Public;
         ToggleAntiSlipButton.ToggleMode = true;
 
+        // Aimbot Settings
         ToggleAimbotButton.Text = "Toggle Aimbot";
         ToggleAimbotButton.Name = "ToggleAimbotButton";
         ToggleAimbotButton.Access = AccessLevel.Public;
@@ -62,6 +64,7 @@ public sealed partial class BasedWindow : DefaultWindow
         aimbotMode.AddItem("Near Player", AimMode.NEAR_PLAYER, OnAimbotModeSelected);  // idx 0
         aimbotMode.AddItem("Near Mouse", AimMode.NEAR_MOUSE, OnAimbotModeSelected);  // idx 1
 
+        // TODO, NOT [SECURITY], [PASSENGERS], other Teams etc. Add to aimbot filter
 
         // Setup Nukie Mode Detector
         NukieIndicator.ToggleMode = false;
@@ -91,6 +94,24 @@ public sealed partial class BasedWindow : DefaultWindow
         OnDisposed = null;
     }
 
+    public void UpdateToggleStates()
+    {
+        if (_based == null) return;
+        ShowJobIconsButton.Pressed = _based.RefreshShowJobsState();
+        ToggleLightButton.Pressed = _based.RefreshLightState();
+        ToggleSubfloorButton.Pressed = _based.RefreshFloorState();
+        ToggleAntiSlipButton.Pressed = _based.AntiSlipEnabled;
+        ToggleAimbotButton.Pressed = _based.AimbotEnabled;
+        switch (_based.curAimbotMode)
+        {
+            case AimMode.NEAR_PLAYER:
+                this.aimbotMode.Select(0); break;
+            case AimMode.NEAR_MOUSE:
+                this.aimbotMode.Select(1); break;
+        }
+
+    }
+
     private void OnAimbotModeSelected(RadioOptionItemSelectedEventArgs<AimMode> args)
     {
         if (this._based == null) return; // sanity guard
@@ -105,7 +126,5 @@ public sealed partial class BasedWindow : DefaultWindow
                 break;
         }
         this.aimbotMode.Select(args.Id);
-
-        this._based.ToggleAimbot(true);
     }
 }

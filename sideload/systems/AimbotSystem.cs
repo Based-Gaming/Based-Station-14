@@ -31,6 +31,8 @@ using Content.Shared.Mobs;
 using YamlDotNet.Core.Tokens;
 using Content.Shared.Pinpointer;
 using static Robust.Client.GameObjects.SpriteComponent;
+using Content.Shared.NukeOps;
+using Content.Shared.RatKing;
 
 namespace Based.Systems;
 
@@ -39,22 +41,8 @@ public static class AimbotPatch
 {
     static bool IsAimbotEnabled()
     {
-        IConsoleHost _consoleHost = IoCManager.Resolve<IConsoleHost>();
-        IConsoleCommand? cmd = null;
-        bool enabled = false;
-        foreach (var kvp in _consoleHost.AvailableCommands)
-        {
-            if (kvp.Key.Equals("based.aimbot"))
-            {
-                cmd = kvp.Value;
-                break;
-            }
-        }
-        if (cmd == null)
-            return false;
-
-        enabled = Traverse.Create(cmd).Field("enabled").GetValue<bool>();
-        return enabled;
+        var sys = IoCManager.Resolve<IEntitySystemManager>().GetEntitySystem<BasedSystem>();
+        return sys.AimbotEnabled;
     }
 
     [HarmonyTargetMethod]
@@ -88,6 +76,7 @@ public sealed class AimbotSystem : EntitySystem
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly InteractionSystem _is = default!;
 
+    private EntityUid player;
     IConsoleCommand? _cmd = null;
 
     public override void Initialize()
@@ -120,28 +109,37 @@ public sealed class AimbotSystem : EntitySystem
     }
 
     // False if not enabled, or cannot resolve
-    private bool GetAimbotMode(ref AimMode mode)
+    private static AimMode GetAimbotMode()
     {
-        if (_cmd == null)
-        {
-            foreach (var kvp in _consoleHost.AvailableCommands)
-            {
-                if (kvp.Key.Equals("based.aimbot"))
-                {
-                    _cmd = kvp.Value;
-                    break;
-                }
-            }
-            if( _cmd == null)
-                return false;
-        }
+        var sys = IoCManager.Resolve<IEntitySystemManager>().GetEntitySystem<BasedSystem>();
+        return sys.curAimbotMode;
+    }
 
-        bool enabled = Traverse.Create(_cmd).Field("enabled").GetValue<bool>();
-        if (!enabled)
-            return false;
+    enum Teams
+    {
+        NONE,
+        NUKIE,
+        RATKING,
+        SECURITY,
+        PASSENGER,
 
-        mode = Traverse.Create(_cmd).Field("mode").GetValue<AimMode>();
-        return true;
+    }
+
+    private Teams GetTeam(EntityUid ent)
+    {
+        if (TryComp(ent, out NukeOperativeComponent? n))
+            return Teams.NUKIE;
+        if (TryComp(ent, out RatKingComponent? r) || (TryComp(ent, out RatKingServantComponent? rs)))
+            return Teams.RATKING;
+        return Teams.NONE;
+    }
+
+    private bool IsOnMyTeam(EntityUid ent)
+    {
+        Teams myTeam = GetTeam(player);
+        if (myTeam == Teams.NONE) return false;
+        if (myTeam == GetTeam(ent)) return true;
+        return false;
     }
 
     private bool Filter(Entity<TransformComponent> ent)
@@ -150,7 +148,7 @@ public sealed class AimbotSystem : EntitySystem
         if (!TryComp(ent, out MobStateComponent? state))
             return false;
         if (state.CurrentState != MobState.Alive) return false;
-        // if we are ratking TODO
+        if (IsOnMyTeam(ent.Owner)) return false;
         return true;
     }
 
@@ -222,14 +220,11 @@ public sealed class AimbotSystem : EntitySystem
 
     public override void FrameUpdate(float frameTime)
     {
-        AimMode mode = AimMode.NEAR_PLAYER;
-        if (!this.GetAimbotMode(ref mode))
-            return;
-
         // Early bail if no player
         EntityUid? p = _playerMan.LocalEntity;
         if (p == null) return;
-        EntityUid player = (EntityUid)p;
+        this.player = p.Value;
+        AimMode mode = GetAimbotMode();
 
         // Check is in combat mode
         if (!EntityManager.TryGetComponent<CombatModeComponent>(player, out CombatModeComponent? combat))
