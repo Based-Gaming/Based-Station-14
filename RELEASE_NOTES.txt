@@ -14,6 +14,9 @@
 * Avoids team members:
   * If nukie, wont target other nukies
   * If ratking, wont target other rat servants
+  * Clown spiders
+  * Giant spiders
+  * Dragons and carps
 
 ### Bug Fixes
 * Mouse aimbot mode actually works now

@@ -25,15 +25,9 @@ using Content.Shared.Physics;
 using Robust.Shared.Physics;
 using Robust.Shared.GameObjects;
 using System.Reflection;
-using System;
-using Robust.Shared.Physics.Components;
 using Content.Shared.Mobs;
-using YamlDotNet.Core.Tokens;
-using Content.Shared.Pinpointer;
-using static Robust.Client.GameObjects.SpriteComponent;
 using Content.Shared.NukeOps;
 using Content.Shared.RatKing;
-using Robust.Shared.Prototypes;
 
 namespace Based.Systems;
 
@@ -124,6 +118,10 @@ public sealed class AimbotSystem : EntitySystem
         SECURITY,
         PASSENGER,
         DRAGON,
+        SLIME,
+        REAGENTSLIME,
+        CLOWNSPIDER,
+        GIANTSPIDER
 
     }
 
@@ -133,13 +131,20 @@ public sealed class AimbotSystem : EntitySystem
             return Teams.NUKIE;
         if (TryComp(ent, out RatKingComponent? r) || (TryComp(ent, out RatKingServantComponent? rs)))
             return Teams.RATKING;
+
         // Find team based on metadata
         if (TryComp(ent, out MetaDataComponent? meta) && meta.EntityPrototype != null)
         {
             if (meta.EntityPrototype.ID.Contains("Dragon"))
-            {
                 return Teams.DRAGON;
-            }
+            if (meta.EntityPrototype.ID.Contains("MobAdultSlimes"))
+                return Teams.SLIME;
+            if (meta.EntityPrototype.ID.Contains("ReagentSlime"))
+                return Teams.REAGENTSLIME;
+            if (meta.EntityPrototype.ID.Equals("MobClownSpider"))
+                return Teams.CLOWNSPIDER;
+            if (meta.EntityPrototype.ID.Contains("MobGiantSpider"))
+                return Teams.GIANTSPIDER;
         }
         return Teams.NONE;
     }
