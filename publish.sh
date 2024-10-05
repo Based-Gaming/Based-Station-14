@@ -1,4 +1,6 @@
 #!/bin/bash
+RHOST="guru@pwnd.top"
+RPATH="/var/www/bs14.pwnd.top"
 
 if [ -z "$1" ]; then
 	VER="0.0"
@@ -11,6 +13,7 @@ cd "$(dirname "$0")"
 mkdir -p "PUBLISH"
 declare -a builds=("win" "linux")
 
+ssh "${RHOST}" "rm ${RPATH}/bs14_*"
 for build in "${builds[@]}"
 do
     dotnet publish sideload/Based.csproj -c Release --no-self-contained -r $build-x64 /nologo
@@ -22,7 +25,7 @@ do
     cp "../bin/Release/net8.0/$build-x64/publish/Based.dll"  "Mods"
     zip -r "${output}" "Mods"
     rm -rf Mods
-    scp "${output}" "guru@pwnd.top:/var/www/bs14.pwnd.top/${output}"
+    scp "${output}" "${RHOST}:${RPATH}/${output}"
     popd
 done
-scp "RELEASE_NOTES.txt" "guru@pwnd.top:/var/www/bs14.pwnd.top/RELEASE_NOTES.txt"
+scp "RELEASE_NOTES.txt" "${RHOST}:${RPATH}/RELEASE_NOTES.txt"
