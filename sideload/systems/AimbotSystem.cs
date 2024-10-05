@@ -33,6 +33,7 @@ using Content.Shared.Pinpointer;
 using static Robust.Client.GameObjects.SpriteComponent;
 using Content.Shared.NukeOps;
 using Content.Shared.RatKing;
+using Robust.Shared.Prototypes;
 
 namespace Based.Systems;
 
@@ -122,6 +123,7 @@ public sealed class AimbotSystem : EntitySystem
         RATKING,
         SECURITY,
         PASSENGER,
+        DRAGON,
 
     }
 
@@ -131,6 +133,14 @@ public sealed class AimbotSystem : EntitySystem
             return Teams.NUKIE;
         if (TryComp(ent, out RatKingComponent? r) || (TryComp(ent, out RatKingServantComponent? rs)))
             return Teams.RATKING;
+        // Find team based on metadata
+        if (TryComp(ent, out MetaDataComponent? meta) && meta.EntityPrototype != null)
+        {
+            if (meta.EntityPrototype.ID.Contains("Dragon"))
+            {
+                return Teams.DRAGON;
+            }
+        }
         return Teams.NONE;
     }
 
