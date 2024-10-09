@@ -28,4 +28,4 @@ do
     scp "${output}" "${RHOST}:${RPATH}/${output}"
     popd
 done
-scp "RELEASE_NOTES.txt" "${RHOST}:${RPATH}/RELEASE_NOTES.txt"
+scp "README.md" "${RHOST}:${RPATH}/README.md"
