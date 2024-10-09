@@ -25,7 +25,7 @@ do
     cp "../bin/Release/net8.0/$build-x64/publish/Based.dll"  "Mods"
     zip -r "${output}" "Mods"
     rm -rf Mods
-    scp "${output}" "${RHOST}:${RPATH}/${output}"
+    scp "${output}" "${RHOST}:${RPATH}/downloads/${output}"
     popd
 done
 scp "README.md" "${RHOST}:${RPATH}/README.md"
