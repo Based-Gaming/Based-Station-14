@@ -6,7 +6,7 @@ To use: Download the MarseyLoader latest release. Place the plugin.dll files int
 
 Releases mirrored on https://bs14.pwnd.top/
 
-<img width="590" alt="image" src="https://github.com/user-attachments/assets/89071a55-ca47-4745-b8f2-949088707611">
+<img width="590" alt="image" src="https://bs14.pwnd.top/">
 
 
 ## Features
