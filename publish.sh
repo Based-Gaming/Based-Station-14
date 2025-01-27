@@ -13,7 +13,7 @@ cd "$(dirname "$0")"
 mkdir -p "PUBLISH"
 declare -a builds=("win" "linux")
 
-ssh "${RHOST}" "rm ${RPATH}/bs14_*"
+ssh "${RHOST}" "rm ${RPATH}/downloads/bs14_*"
 for build in "${builds[@]}"
 do
     dotnet publish sideload/Based.csproj -c Release --no-self-contained -r $build-x64 /nologo
