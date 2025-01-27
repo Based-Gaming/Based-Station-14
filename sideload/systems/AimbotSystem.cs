@@ -103,13 +103,6 @@ public sealed class AimbotSystem : EntitySystem
         return resSet;
     }
 
-    // False if not enabled, or cannot resolve
-    private static AimMode GetAimbotMode()
-    {
-        var sys = IoCManager.Resolve<IEntitySystemManager>().GetEntitySystem<BasedSystem>();
-        return sys.curAimbotMode;
-    }
-
     enum Teams
     {
         NONE,
@@ -239,7 +232,13 @@ public sealed class AimbotSystem : EntitySystem
         EntityUid? p = _playerMan.LocalEntity;
         if (p == null) return;
         this.player = p.Value;
-        AimMode mode = GetAimbotMode();
+
+        var sys = IoCManager.Resolve<IEntitySystemManager>().GetEntitySystem<BasedSystem>();
+        AimMode mode = sys.curAimbotMode;
+        bool enabled = sys.AimbotEnabled;
+
+        if (!enabled)
+            return;
 
         // Check is in combat mode
         if (!EntityManager.TryGetComponent<CombatModeComponent>(player, out CombatModeComponent? combat))
